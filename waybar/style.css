@@ -7,12 +7,11 @@ window#waybar {
     min-height: 0;
 }
 
-#custom-media {
-    background-color: gray;
-    border-radius: 3px;
+#custom-spotify {
+    color: #cdd6f4;
+    font-size: 15px;
 }
 
-#groupleft,
 /* #groupcenter, */
 #groupright {
     margin-top: 5px;
@@ -25,7 +24,6 @@ window#waybar {
 #clock,
 #power-profiles-daemon,
 #custom-media,
-#workspaces,
 #battery {
     background-color: rgba(0,0,0,.5);
     color: #cdd6f4;
@@ -51,27 +49,21 @@ window#waybar {
     color: rgba(255, 255, 255, 0.5)
 }
 
-/* Individual workspace buttons */
+
 #workspaces button {
-    padding: 0 5px;
-    background: transparent;
-    color: #ffffff;
-    border-bottom: 3px solid transparent;
+  color: rgb(145, 145, 145);
+  padding: 0 3px;
+  margin: 0 0.5px;
+  min-width: 5px;
 }
 
-/* The workspace you are currently on */
-#workspaces button.focused {
-    color: #89b4fa;
-    border-bottom: 3px solid #89b4fa;
+#workspaces button.empty {
+  color: rgba(255, 255, 255, 0);
 }
 
-/* Workspaces with windows currently open */
 #workspaces button.active {
-    color: #a6e3a1;
-}
-
-/* Workspaces signaling an alert (like a Discord ping) */
-#workspaces button.urgent {
-    background-color: #f38ba8;
-    color: #11111b;
+  transition: all 50ms ease-out;
+  margin-bottom: 10px;
+  color: rgb(229, 163, 252);
+  opacity: 1;
 }

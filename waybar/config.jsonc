@@ -25,30 +25,28 @@
     "group/groupleft": {
         "orientation": "horizontal",
         "modules": [
-            //"custom/media",
+            "custom/spotify",
             "hyprland/workspaces"
         ]
     },
 
     "hyprland/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": true,
-        "warp-on-scroll": false,
-        "format": "{name}: {icon}",
-        "format-icons": {
-            "1": "󰈹", // Web Browser
-            "2": "", // Code
-            "3": "", // Terminal
-            "4": "", // Chat/Discord
-            "5": "", // Music
-            "urgent": "",
-            "focused": "",
-            "default": ""
-        },
-        "persistent-workspaces": {
-            "*": 5 // This keeps workspaces 1-5 visible even if empty
-        }
-    },
+    "on-click": "activate",
+    "format": "{icon}",
+    "format-icons": {
+      "default": "",
+      "1":  "<span size='12000'>󰲠</span>",
+      "2":  "<span size='12000'>󰈹</span>", //󰲢
+      "3":  "<span size='12000'>󰲤</span>",
+      "4":  "<span size='12000'>󰲦</span>",
+      "5":  "<span size='12000'>󰲨</span>",
+      "6":  "<span size='12000'>󰲪</span>",
+      "7":  "<span size='12000'>󰲬</span>",
+      "8":  "<span size='12000'>󰲮</span>",
+      "9":  "<span size='12000'>󰓇</span>",
+      "10": "<span size='12000'>󰙯</span>"
+    }
+	},
 
     "clock": {
         "tooltip": false,
@@ -73,14 +71,10 @@
       }
     },
 
-    "custom/media": {
-        "format": "    {text}",
-        "return-type": "json",
-        "max-length": 40,
-        "escape": true,
-        "exec": "playerctl -a metadata --format '{\"text\": \"{{title}}\", \"alt\": \"{{playerName}}\"}' --follow",
-        "on-click": "playerctl play-pause",
-        "on-scroll-up": "playerctl next",
-        "on-scroll-down": "playerctl previous"
+    "custom/spotify": {
+        "exec": "playerctl --player=spotify metadata --format '{{title}} - {{artist}}'",
+        "interval": 5,
+        "format": "  {}",
+        "on-click": "playerctl --player=spotify play-pause"
     }
 }

@@ -3,7 +3,7 @@
 DOTS="$HOME/dotfiles"
 CONFIG="$HOME/.config"
 
-apps=("hypr" "kitty" "waybar" "tofi")
+apps=("hypr" "kitty" "waybar" "tofi" "discord")
 
 for app in "${apps[@]}"; do
     if [ -d "$HOME/dotfiles/$app" ]; then
