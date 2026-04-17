@@ -1,0 +1,31 @@
+width = 40%
+height = 30%
+anchor = center
+
+hide-cursor = true
+
+prompt-color = #6dff34
+input-color = #6dff34
+prompt-text = ">"
+history = true
+text-cursor = true
+text-cursor-style = underscore
+text-cursor-thickness = 2
+
+prompt-padding = 5
+num-results = 0
+
+default-result-color = #6dff34
+selection-color = #ffffff
+
+background-color = #0e0e0ed9
+
+border-width = 3
+border-color = #16370a
+outline-width = 0
+corner-radius = 10
+
+font-features = "smcp, c2sc"
+font-variations = "wght 900" (Extra bold)
+
+font-size = 15

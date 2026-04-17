@@ -1,0 +1,77 @@
+window#waybar {
+    background-color: transparent;
+}
+
+* {
+    padding: 0;
+    min-height: 0;
+}
+
+#custom-media {
+    background-color: gray;
+    border-radius: 3px;
+}
+
+#groupleft,
+/* #groupcenter, */
+#groupright {
+    margin-top: 5px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: rgba(28, 28, 28, 0.9);
+    border-radius: 5px;
+}
+
+#clock,
+#power-profiles-daemon,
+#custom-media,
+#workspaces,
+#battery {
+    background-color: rgba(0,0,0,.5);
+    color: #cdd6f4;
+    border-radius: 5px;
+    padding: 0 8px;
+    margin: 5px 5px;
+    font-size: 11px;
+}
+
+#clock {
+    font-weight: bold;
+}
+
+#battery {
+    margin: 5px 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: lightgreen;
+}
+
+#power-profiles-daemon {
+    margin: 5px 5px;
+    background-color: rgb(82, 36, 155);
+    color: rgba(255, 255, 255, 0.5)
+}
+
+/* Individual workspace buttons */
+#workspaces button {
+    padding: 0 5px;
+    background: transparent;
+    color: #ffffff;
+    border-bottom: 3px solid transparent;
+}
+
+/* The workspace you are currently on */
+#workspaces button.focused {
+    color: #89b4fa;
+    border-bottom: 3px solid #89b4fa;
+}
+
+/* Workspaces with windows currently open */
+#workspaces button.active {
+    color: #a6e3a1;
+}
+
+/* Workspaces signaling an alert (like a Discord ping) */
+#workspaces button.urgent {
+    background-color: #f38ba8;
+    color: #11111b;
+}
