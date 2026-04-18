@@ -1,8 +1,11 @@
 :root{
     --NavbarWidth: 40;
-    --TabsHeight: 28;
-    --TabsBorder: 10;
-    --NavbarHeightSmall: 30
+
+    --TabsHeight: 20 !important; 
+    --NavbarHeightSmall: 20 !important;
+
+    --tab-min-height: 20px !important;
+    --tab-max-height: 20px !important;
 }
 
 /* layout */
@@ -72,6 +75,7 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
 #tab-notification-deck .container.infobar{background: -moz-Dialog !important}
 #tab-notification-deck .notificationbox-stack{background: transparent !important}
 
+#identity-box,
 .tab-close-button,
 #urlbar-zoom-button,
 #star-button-box,
@@ -79,17 +83,17 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
     display: none !important;
 }
 
-#tabs-newtab-button,
 #new-tab-button{opacity: 0 !important}
 
-#urlbar-container, #urlbar {
-  font-size: 11px !important;
-}
-
-.tab-label {
+#urlbar-container, #urlbar, .tab-label {
     font-size: 12px !important;
 }
 
+/* hover for new tab */
+#tabs-newtab-button:hover > .toolbarbutton-icon,
+#new-tab-button:hover > .toolbarbutton-icon {
+    background-color: transparent !important;
+}
 
 /*  Urlbar popup thing  */
 /* .urlbarView-row{display: none !important}
@@ -101,23 +105,25 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
         display: none !important;
     }
     #back-button, #forward-button{display: none !important}
-    
-    :root {
-        --tab-min-height: 15px !important;
-        --tab-max-height: 15px !important;
-    }
+}
 
-    #TabsToolbar {
-        min-height: 15px !important;
-        height: 15px !important;
-    }
 
-    /* Reset the tab toolbar margin so it's not trying to make room for a side-by-side bar */
-    #TabsToolbar-customization-target {
-        margin-right: 0 !important;
+@media screen and (min-width: 849px) {
+    :root[sizemode="maximized"] #nav-bar,
+    :root[sizemode="fullscreen"] #nav-bar {
+        margin-top: calc(var(--TabsHeight) * -2px) !important; 
     }
+}
 
-    toolbarspring {
-        display: none !important;
-    }
+#tabbrowser-tabs {
+    --tab-min-width: 30px !important;
+}
+
+#tabbrowser-tabs .tabbrowser-tab[fadein]:not([pinned]) {
+    min-width: var(--tab-min-width) !important;
+}
+
+#tabbrowser-tabs .tabbrowser-tab .tab-content {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
 }
