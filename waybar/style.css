@@ -24,7 +24,9 @@ window#waybar {
 #clock,
 #power-profiles-daemon,
 #custom-media,
-#battery {
+#cpu,
+#temperature,
+#custom-battery {
     background-color: rgba(0,0,0,.5);
     color: #cdd6f4;
     border-radius: 5px;
@@ -37,7 +39,19 @@ window#waybar {
     font-weight: bold;
 }
 
-#battery {
+tooltip {
+    background-color: rgb(30, 30, 30);
+    border-radius: 5px;
+}
+
+tooltip label {
+    color: #d0d0d0;
+    font-size: 12px;
+    font-family: "JetBrains Mono", sans-serif;
+    font-weight: bold;
+}
+
+#custom-battery {
     margin: 5px 0;
     background-color: rgba(0, 0, 0, 0);
     color: lightgreen;
@@ -48,7 +62,6 @@ window#waybar {
     background-color: rgb(82, 36, 155);
     color: rgba(255, 255, 255, 0.5)
 }
-
 
 #workspaces button {
   color: rgb(145, 145, 145);

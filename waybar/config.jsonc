@@ -18,7 +18,7 @@
         "modules": [
             "clock",
             "power-profiles-daemon",
-            "battery"
+            "custom/battery"
         ]
     },
 
@@ -49,15 +49,19 @@
 	},
 
     "clock": {
-        "tooltip": false,
         "interval": 60,
         "format": "{:%I:%M %p}",
-        "max-length": 25
+        "max-length": 25,
+        "tooltip": true,
+        "tooltip-format": " {:%A, %B %d} "
     },
 
-    "battery": {
-        "tooltip": false,
-        "format": "󰂂 {capacity}"
+    "custom/battery": {
+        "exec": "echo \"{\\\"text\\\": \\\"$(cat /sys/class/power_supply/BAT0/capacity)\\\", \\\"tooltip\\\": \\\" $(($(cat /sys/class/thermal/thermal_zone0/temp) / 1000))°C \\\"}\"",
+        "return-type": "json",
+        "format": "󰂂 {}",
+        "interval": 30,
+        "tooltip": true
     },
 
     "power-profiles-daemon": {
@@ -76,5 +80,9 @@
         "interval": 5,
         "format": "  {}",
         "on-click": "playerctl --player=spotify play-pause"
+    },
+    "temperature": {
+        "format": " {temperatureC}",
+        "tooltip": false
     }
 }
