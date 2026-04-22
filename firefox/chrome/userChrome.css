@@ -1,24 +1,81 @@
-:root{
-    --NavbarWidth: 40;
-
-    --TabsHeight: 20 !important; 
-    --NavbarHeightSmall: 20 !important;
-
-    --tab-min-height: 20px !important;
-    --tab-max-height: 20px !important;
-}
-
 /* layout */
 
-@media screen and (min-width:1325px)    /*  Only the tabs space will grow from here  */
-{#nav-bar{margin-top: calc(var(--TabsHeight) * -1px - var(--TabsBorder) * 1px)!important; height: calc(var(--TabsHeight) * 1px + var(--TabsBorder) * 1px)} #TabsToolbar{margin-left: calc(1325px / 100 * var(--NavbarWidth)) !important} #nav-bar{margin-right: calc(100vw - calc(1325px / 100 * var(--NavbarWidth))) !important; vertical-align: center !important} #urlbar-container{min-width: 0px !important;  flex: auto !important} toolbarspring{display: none !important}}
+:root{
+    --tab-min-height: 60px !important
+}
 
-@media screen and (min-width:850px) and (max-width:1324px)    /*  Both the tabs space and the navbar will grow  */
-{#nav-bar{margin-top: calc(var(--TabsHeight) * -1px - var(--TabsBorder) * 1px) !important; height: calc(var(--TabsHeight) * 1px + var(--TabsBorder) * 1px)} #TabsToolbar{margin-left: calc(var(--NavbarWidth) * 1vw) !important} #nav-bar{margin-right: calc(100vw - calc(var(--NavbarWidth) * 1vw)) !important; vertical-align: center !important} #urlbar-container{min-width: 0px !important;  flex: auto !important} toolbarspring{display: none !important} #TabsToolbar, #nav-bar{transition: margin-top .25s !important}}
+#urlbar-container {
+    --urlbar-container-height: 60px !important;
+}
 
-@media screen and (max-width:849px)    /*  The window is not enough wide for a one line layout  */
-{#nav-bar{padding: 0 5px 0 5px!important; height: calc(var(--NavbarHeightSmall) * 1px) !important} toolbarspring{display: none !important;} #TabsToolbar, #nav-bar{transition: margin-top .25s !important}}
-#nav-bar, #PersonalToolbar{background-color: #0000 !important;background-image: none !important; box-shadow: none !important} #nav-bar{margin-left: 3px; border-top: none !important} .tab-background, .tab-stack { min-height: calc(var(--TabsHeight) * 1px) !important}
+#back-button, #forward-button, #PanelUI-menu-button {
+  transform: scale(1.5) !important;
+  margin-left: 7px !important;
+  margin-right: 7px !important;
+}
+
+
+@media screen and (min-width:1325px)
+{
+    #nav-bar{
+        margin-top: -40 !important;
+        height: 40 !important;
+    }
+
+    #TabsToolbar{
+        margin-left: calc(1325px / 100 * 60) !important;
+        height: 100px !important;
+    }
+
+    #toolbar-items {
+        height: 100px !important;
+    }
+        
+    #nav-bar{
+        margin-right: calc(100vw - calc(1325px / 100 * 60)) !important;
+        margin-top: -60px !important;
+        vertical-align: center !important;
+    }
+    #urlbar-container{
+        min-width: 0px !important;
+        flex: auto !important
+    }
+
+    toolbarspring {
+        display: none !important
+    }
+}
+
+@media screen and (min-width:850px) and (max-width:1324px){
+    #back-button, 
+    #forward-button {
+    display: none !important;
+    }
+
+    #PanelUI-menu-button {
+    display: none !important;
+    }
+
+    toolbarspring{display: none !important}
+    
+    #TabsToolbar,
+    #nav-bar{
+        transition: margin-top .25s !important
+    }
+}
+
+/* @media screen and (max-width:849px)
+{#nav-bar{padding: 0 5px 0 5px!important; height: calc(var(--NavbarHeightSmall) * 1px) !important} toolbarspring{display: none !important;} #TabsToolbar, #nav-bar{transition: margin-top .25s !important}} */
+    
+#nav-bar{
+    margin-left: 3px;
+    border-top: none !important
+}
+    
+.tab-background,
+.tab-stack {
+    min-height: calc(var(--TabsHeight) * 1px) !important
+}
 
 /*  Removes flash before loading pages  */
 :root{--tabpanel-background-color: -moz-Dialog !important}
@@ -86,7 +143,13 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
 #new-tab-button{opacity: 0 !important}
 
 #urlbar-container, #urlbar, .tab-label {
-    font-size: 12px !important;
+    font-size: 24px !important;
+}
+
+.tab-icon-image {
+    margin-left: 5px !important;
+    height: 24px !important;
+    width: 24px !important;
 }
 
 /* hover for new tab */
@@ -108,22 +171,24 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
 }
 
 
-@media screen and (min-width: 849px) {
-    :root[sizemode="maximized"] #nav-bar,
-    :root[sizemode="fullscreen"] #nav-bar {
-        margin-top: calc(var(--TabsHeight) * -2px) !important; 
-    }
-}
-
-#tabbrowser-tabs {
-    --tab-min-width: 30px !important;
-}
-
-#tabbrowser-tabs .tabbrowser-tab[fadein]:not([pinned]) {
-    min-width: var(--tab-min-width) !important;
+.tabbrowser-tab[fadein]:not([pinned]) {
+  max-width: 350px !important;
+  min-width: 51px !important;
 }
 
 #tabbrowser-tabs .tabbrowser-tab .tab-content {
     padding-left: 5px !important;
     padding-right: 5px !important;
+}
+
+#nav-bar,
+#PersonalToolbar{
+    background-color: #0000 !important;
+    background-image: none !important;
+    box-shadow: none !important
+}
+
+/* Increase space between tab icon and text */
+.tab-icon-stack {
+  margin-inline-end: 8px !important;
 }

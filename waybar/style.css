@@ -9,7 +9,7 @@ window#waybar {
 
 #custom-spotify {
     color: #cdd6f4;
-    font-size: 15px;
+    font-size: 22px;
 }
 
 /* #groupcenter, */
@@ -23,16 +23,15 @@ window#waybar {
 
 #clock,
 #power-profiles-daemon,
-#custom-media,
 #cpu,
 #temperature,
 #custom-battery {
     background-color: rgba(0,0,0,.5);
     color: #cdd6f4;
     border-radius: 5px;
-    padding: 0 8px;
-    margin: 5px 5px;
-    font-size: 11px;
+    padding: 0 20px;
+    margin: 8px 8px;
+    font-size: 22px;
 }
 
 #clock {
@@ -66,7 +65,7 @@ tooltip label {
 #workspaces button {
   color: rgb(145, 145, 145);
   padding: 0 3px;
-  margin: 0 0.5px;
+  margin: 0 2.5px;
   min-width: 5px;
 }
 
@@ -76,7 +75,7 @@ tooltip label {
 
 #workspaces button.active {
   transition: all 50ms ease-out;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   color: rgb(229, 163, 252);
   opacity: 1;
 }

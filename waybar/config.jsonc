@@ -2,8 +2,8 @@
 {
     "layer": "top",
     "position": "top",
-    "height": 20,
-    "width": 1280,
+    "height": 50,
+    "width": 2560,
 
     "modules-right": [
         "group/groupright"
@@ -35,16 +35,16 @@
     "format": "{icon}",
     "format-icons": {
       "default": "",
-      "1":  "<span size='12000'>󰲠</span>",
-      "2":  "<span size='12000'>󰈹</span>", //󰲢
-      "3":  "<span size='12000'>󰲤</span>",
-      "4":  "<span size='12000'>󰲦</span>",
-      "5":  "<span size='12000'>󰲨</span>",
-      "6":  "<span size='12000'>󰲪</span>",
-      "7":  "<span size='12000'>󰲬</span>",
-      "8":  "<span size='12000'>󰲮</span>",
-      "9":  "<span size='12000'>󰓇</span>",
-      "10": "<span size='12000'>󰙯</span>"
+      "1":  "<span size='20000'>󰲠</span>",
+      "2":  "<span size='20000'>󰈹</span>", //󰲢
+      "3":  "<span size='20000'>󰲤</span>",
+      "4":  "<span size='20000'>󰲦</span>",
+      "5":  "<span size='20000'>󰲨</span>",
+      "6":  "<span size='20000'>󰲪</span>",
+      "7":  "<span size='20000'>󰲬</span>",
+      "8":  "<span size='20000'>󰲮</span>",
+      "9":  "<span size='20000'>󰓇</span>",
+      "10": "<span size='20000'>󰙯</span>"
     }
 	},
 
@@ -60,7 +60,7 @@
         "exec": "echo \"{\\\"text\\\": \\\"$(cat /sys/class/power_supply/BAT0/capacity)\\\", \\\"tooltip\\\": \\\" $(($(cat /sys/class/thermal/thermal_zone0/temp) / 1000))°C \\\"}\"",
         "return-type": "json",
         "format": "󰂂 {}",
-        "interval": 30,
+        "interval": 5,
         "tooltip": true
     },
 
