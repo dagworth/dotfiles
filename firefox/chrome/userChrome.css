@@ -8,10 +8,22 @@
     --urlbar-container-height: 60px !important;
 }
 
-#back-button, #forward-button, #PanelUI-menu-button {
+#back-button, #forward-button, #PanelUI-menu-button, #new-tab-button {
   transform: scale(1.5) !important;
   margin-left: 7px !important;
   margin-right: 7px !important;
+}
+
+#tabs-newtab-button, 
+#TabsToolbar #tabs-newtab-button {
+    --toolbarbutton-inner-padding: 8px !important;
+}
+
+#tabs-newtab-button .toolbarbutton-icon {
+    width: 35px !important;
+    height: 35px !important;
+    padding: 8px !important;
+    background-color: rgba(255, 255, 255, 0.1) !important; /* Optional: adds a subtle background */
 }
 
 
@@ -140,7 +152,6 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
     display: none !important;
 }
 
-#new-tab-button{opacity: 0 !important}
 
 #urlbar-container, #urlbar, .tab-label {
     font-size: 24px !important;
