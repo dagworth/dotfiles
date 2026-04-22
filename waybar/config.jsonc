@@ -35,16 +35,16 @@
     "format": "{icon}",
     "format-icons": {
       "default": "",
-      "1":  "<span size='20000'>󰲠</span>",
-      "2":  "<span size='20000'>󰈹</span>", //󰲢
-      "3":  "<span size='20000'>󰲤</span>",
-      "4":  "<span size='20000'>󰲦</span>",
-      "5":  "<span size='20000'>󰲨</span>",
-      "6":  "<span size='20000'>󰲪</span>",
-      "7":  "<span size='20000'>󰲬</span>",
-      "8":  "<span size='20000'>󰲮</span>",
-      "9":  "<span size='20000'>󰓇</span>",
-      "10": "<span size='20000'>󰙯</span>"
+      "1":  "<span size='24000'>󰲠</span>",
+      "2":  "<span size='24000'>󰈹</span>", //󰲢
+      "3":  "<span size='24000'>󰲤</span>",
+      "4":  "<span size='24000'>󰲦</span>",
+      "5":  "<span size='24000'>󰲨</span>",
+      "6":  "<span size='24000'>󰲪</span>",
+      "7":  "<span size='24000'>󰲬</span>",
+      "8":  "<span size='24000'>󰲮</span>",
+      "9":  "<span size='24000'>󰓇</span>",
+      "10": "<span size='24000'>󰙯</span>"
     }
 	},
 

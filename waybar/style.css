@@ -21,6 +21,11 @@ window#waybar {
     border-radius: 5px;
 }
 
+#groupleft {
+    margin-top: 5px;
+    margin-left: 20px;
+}
+
 #clock,
 #power-profiles-daemon,
 #cpu,
@@ -62,10 +67,14 @@ tooltip label {
     color: rgba(255, 255, 255, 0.5)
 }
 
+#workspaces {
+    margin-left: 20px;
+}
+
 #workspaces button {
   color: rgb(145, 145, 145);
   padding: 0 3px;
-  margin: 0 2.5px;
+  margin: 0 4px;
   min-width: 5px;
 }
 
@@ -75,7 +84,6 @@ tooltip label {
 
 #workspaces button.active {
   transition: all 50ms ease-out;
-  margin-bottom: 15px;
   color: rgb(229, 163, 252);
   opacity: 1;
 }
