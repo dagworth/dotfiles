@@ -6,14 +6,16 @@
     <title>New Tab</title>
     <style>
         :root {
-            /* Firefox Dark Theme Palette */
             --bg-color: #2B2A33;
             --sidebar-bg: #1C1B22;
             --text-main: #fbfbfe;
             --text-muted: #cfcfd8;
             --accent-purple: #9462ff;
+            --accent-blue: #00ddff;
             --border-gray: #3f3f44;
             --input-bg: #42414d;
+            --danger: #ff5a5a;
+            --sidebar-width: 210px; 
         }
 
         body {
@@ -27,43 +29,44 @@
             overflow: hidden;
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBARS --- */
         .sidebar {
-            width: 300px;
+            width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-gray);
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 15px;
+            flex-shrink: 0;
         }
 
-        .sidebar-label {
-            color: var(--accent-purple);
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+        .sidebar-right {
+            border-right: none;
+            border-left: 1px solid var(--border-gray);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
             margin-bottom: 15px;
-            font-weight: bold;
         }
 
-        #note-input {
+        .input-box {
             width: 100%;
-            padding: 12px;
+            padding: 6px 10px; 
             background: var(--input-bg);
             border: 1px solid transparent;
             border-radius: 4px;
             color: var(--text-main);
             outline: none;
-            margin-bottom: 20px;
             box-sizing: border-box;
-            transition: border-color 0.2s;
+            font-size: 0.8rem;
         }
 
-        #note-input:focus {
-            border-color: var(--accent-purple);
-        }
+        .input-box:focus { border-color: var(--accent-purple); }
 
-        .notes-list {
+        .list-container {
             flex-grow: 1;
             overflow-y: auto;
             list-style: none;
@@ -71,33 +74,63 @@
             margin: 0;
         }
 
-        .note-item {
-            padding: 12px 0;
+        .list-item {
+            padding: 8px 0;
             border-bottom: 1px solid var(--border-gray);
-            font-size: 0.9rem;
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            color: var(--text-muted);
-            line-height: 1.4;
+            line-height: 1.2;
         }
 
+        /* BIGGER NOTES TEXT */
         .note-text {
             word-break: break-word;
-            padding-right: 10px;
+            padding-right: 8px;
+            font-size: 1.15rem; 
+            font-weight: 500;
+            color: var(--text-main);
         }
 
-        .delete-btn {
-            color: #666;
+        .alias-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .alias-tag {
+            font-size: 0.65rem;
+            color: var(--accent-blue);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .fav-link {
+            font-size: 0.85rem;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+
+        .fav-link:hover { color: var(--text-main); }
+
+        .controls {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .icon-btn {
             cursor: pointer;
-            font-size: 1.1rem;
-            line-height: 1;
+            font-size: 0.8rem;
             transition: color 0.2s;
+            user-select: none;
+            opacity: 0.6;
         }
 
-        .delete-btn:hover {
-            color: #ff5a5a;
-        }
+        .icon-btn:hover { opacity: 1; }
+        .lock-btn.active { color: var(--accent-blue); opacity: 1; }
+        .delete-btn:hover { color: var(--danger); }
 
         /* --- MAIN CONTENT --- */
         .main-content {
@@ -105,144 +138,188 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 15vh;
+            padding-top: 18vh;
         }
 
         .search-container {
             width: 100%;
-            max-width: 500px;
+            max-width: 480px;
             text-align: center;
-        }
-
-        .main-label {
-            color: var(--accent-purple);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            display: block;
         }
 
         .search-bar {
             width: 100%;
-            padding: 14px 20px;
+            padding: 12px 18px;
             background: var(--input-bg);
             border: 1px solid var(--border-gray);
             border-radius: 8px;
             color: var(--text-main);
             font-size: 1.1rem;
             outline: none;
-            transition: box-shadow 0.2s ease;
             box-sizing: border-box;
         }
 
-        .search-bar:focus {
-            box-shadow: 0 0 0 2px var(--accent-purple);
-        }
+        .search-bar:focus { box-shadow: 0 0 0 2px var(--accent-purple); }
 
-        .bookmarks {
-            margin-top: 30px;
-            display: flex;
-            gap: 25px;
-        }
-
-        .bookmarks a {
-            text-decoration: none;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            transition: color 0.2s ease;
-        }
-
-        .bookmarks a:hover {
-            color: var(--accent-purple);
-            text-decoration: underline;
-        }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--border-gray); border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
     </style>
 </head>
 <body>
 
+    <!-- Left Sidebar: Notes -->
     <aside class="sidebar">
-        <span class="sidebar-label">Quick Notes</span>
-        <input type="text" id="note-input" placeholder="Type and press Enter..." autocomplete="off">
-        <ul id="notes-list" class="notes-list"></ul>
+        <input type="text" id="note-input" class="input-box" placeholder="note" autocomplete="off">
+        <ul id="notes-list" class="list-container"></ul>
     </aside>
 
+    <!-- Center: Search -->
     <main class="main-content">
         <div class="search-container">
-            <span class="main-label">Search the Web</span>
-            <form action="https://duckduckgo.com/" method="get">
-                <input type="text" name="q" class="search-bar" placeholder="Search..." autofocus autocomplete="off">
+            <form id="search-form" action="https://duckduckgo.com/" method="get">
+                <input type="text" name="q" id="main-search" class="search-bar" placeholder="search" autofocus autocomplete="off">
             </form>
-            
-            <nav class="bookmarks">
-                <a href="https://github.com">GitHub</a>
-                <a href="https://youtube.com">YouTube</a>
-                <a href="https://reddit.com">Reddit</a>
-                <a href="https://gmail.com">Mail</a>
-            </nav>
         </div>
     </main>
 
+    <!-- Right Sidebar: Alias Manager -->
+    <aside class="sidebar sidebar-right">
+        <div class="input-group">
+            <input type="text" id="alias-key" class="input-box" placeholder="key" autocomplete="off">
+            <input type="text" id="alias-url" class="input-box" placeholder="url" autocomplete="off">
+        </div>
+        <ul id="alias-list" class="list-container"></ul>
+    </aside>
+
     <script>
+        /* --- DATA PERSISTENCE --- */
+        let notes = JSON.parse(localStorage.getItem('my-notes-v5')) || [];
+        let aliases = JSON.parse(localStorage.getItem('my-aliases-v5')) || {
+            'g': { name: 'Gemini', url: 'https://gemini.google.com' },
+            'gh': { name: 'GitHub', url: 'https://github.com' }
+        };
+
         const noteInput = document.getElementById('note-input');
         const notesList = document.getElementById('notes-list');
+        const aliasKeyInput = document.getElementById('alias-key');
+        const aliasUrlInput = document.getElementById('alias-url');
+        const aliasList = document.getElementById('alias-list');
+        const mainSearch = document.getElementById('main-search');
+        const searchForm = document.getElementById('search-form');
 
-        // Initial state from LocalStorage
-        let notes = JSON.parse(localStorage.getItem('my-notes')) || [];
+        /* --- SMART SEARCH --- */
+        searchForm.addEventListener('submit', (e) => {
+            const query = mainSearch.value.trim().toLowerCase();
+            
+            // Check if search bar is empty
+            if (!query) {
+                e.preventDefault();
+                return;
+            }
 
+            // Check alias storage first
+            if (aliases[query]) {
+                e.preventDefault();
+                window.location.href = aliases[query].url;
+            } else if (query.includes('.') && !query.includes(' ')) {
+                // Direct URL navigation if it looks like a domain
+                e.preventDefault();
+                window.location.href = query.startsWith('http') ? query : `https://${query}`;
+            }
+        });
+
+        /* --- NOTES LOGIC --- */
         function renderNotes() {
             notesList.innerHTML = '';
-            notes.forEach((note, index) => {
+            notes.forEach((n, i) => {
                 const li = document.createElement('li');
-                li.className = 'note-item';
+                li.className = 'list-item';
                 li.innerHTML = `
-                    <span class="note-text">${note}</span>
-                    <span class="delete-btn" data-index="${index}">&times;</span>
-                `;
+                    <span class="note-text">${n.text}</span>
+                    <div class="controls">
+                        <span class="icon-btn lock-btn ${n.locked ? 'active' : ''}" onclick="toggleNoteLock(${i})">${n.locked ? '🔒' : '🔓'}</span>
+                        <span class="icon-btn delete-btn" onclick="deleteNote(${i})" style="${n.locked ? 'opacity:0.1; cursor:default' : ''}">&times;</span>
+                    </div>`;
                 notesList.appendChild(li);
             });
         }
 
         function addNote() {
-            const text = noteInput.value.trim();
-            if (text !== '') {
-                notes.unshift(text);
+            const val = noteInput.value.trim();
+            if (val) {
+                notes.unshift({ text: val, locked: false });
                 noteInput.value = '';
-                saveAndRender();
+                saveNotes();
             }
         }
 
-        // Use Event Delegation for delete buttons
-        notesList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-btn')) {
-                const index = e.target.getAttribute('data-index');
-                notes.splice(index, 1);
-                saveAndRender();
-            }
-        });
-
-        function saveAndRender() {
-            localStorage.setItem('my-notes', JSON.stringify(notes));
-            renderNotes();
+        window.toggleNoteLock = (i) => { notes[i].locked = !notes[i].locked; saveNotes(); };
+        window.deleteNote = (i) => { if (!notes[i].locked) { notes.splice(i, 1); saveNotes(); } };
+        
+        function saveNotes() { 
+            localStorage.setItem('my-notes-v5', JSON.stringify(notes)); 
+            renderNotes(); 
         }
 
-        noteInput.addEventListener("keydown", (e) => {
-            console.log("Key pressed:", e.key); // DEBUG LINE
+        /* --- ALIAS LOGIC --- */
+        function renderAliases() {
+            aliasList.innerHTML = '';
+            Object.keys(aliases).forEach(key => {
+                const item = aliases[key];
+                const li = document.createElement('li');
+                li.className = 'list-item';
+                li.innerHTML = `
+                    <div class="alias-info">
+                        <span class="alias-tag">${key}</span>
+                        <a href="${item.url}" class="fav-link" target="_blank">${item.name}</a>
+                    </div>
+                    <div class="controls">
+                        <span class="icon-btn" onclick="editAlias('${key}')">✏️</span>
+                        <span class="icon-btn delete-btn" onclick="deleteAlias('${key}')">&times;</span>
+                    </div>`;
+                aliasList.appendChild(li);
+            });
+        }
+
+        function handleAliasSubmit(e) {
             if (e.key === 'Enter') {
-                console.log("Enter detected!"); // DEBUG LINE
-                addNote();
+                const key = aliasKeyInput.value.trim().toLowerCase();
+                let url = aliasUrlInput.value.trim();
+                
+                if (key && url) {
+                    if (!url.startsWith('http')) url = 'https://' + url;
+                    const name = url.replace('https://', '').replace('www.', '').split(/[/?#]/)[0];
+                    aliases[key] = { name: name.charAt(0).toUpperCase() + name.slice(1), url: url };
+                    
+                    aliasKeyInput.value = '';
+                    aliasUrlInput.value = '';
+                    saveAliases();
+                }
             }
-        });
+        }
 
-        // Initial Render
-        console.log("render notes");
+        window.deleteAlias = (key) => { delete aliases[key]; saveAliases(); };
+        
+        window.editAlias = (key) => {
+            aliasKeyInput.value = key;
+            aliasUrlInput.value = aliases[key].url;
+            delete aliases[key]; 
+            saveAliases();
+            aliasKeyInput.focus();
+        };
+
+        function saveAliases() { 
+            localStorage.setItem('my-aliases-v5', JSON.stringify(aliases)); 
+            renderAliases(); 
+        }
+
+        /* --- EVENT LISTENERS --- */
+        noteInput.addEventListener("keydown", (e) => e.key === 'Enter' && addNote());
+        aliasKeyInput.addEventListener("keydown", handleAliasSubmit);
+        aliasUrlInput.addEventListener("keydown", handleAliasSubmit);
+
         renderNotes();
+        renderAliases();
     </script>
 </body>
 </html>
