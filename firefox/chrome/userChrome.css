@@ -202,3 +202,8 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
 .tab-icon-stack {
   margin-inline-end: 8px !important;
 }
+
+browser[type="content-primary"], 
+browser[type="content"] {
+  background: #2B2A33 !important;
+}
