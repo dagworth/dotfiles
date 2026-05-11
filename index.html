@@ -8,6 +8,7 @@
         :root {
             --bg-color: #2B2A33;
             --sidebar-bg: #1C1B22;
+            --master-nav-bg: #0C0C0F;
             --text-main: #fbfbfe;
             --text-muted: #cfcfd8;
             --accent-purple: #9462ff;
@@ -15,310 +16,313 @@
             --border-gray: #3f3f44;
             --input-bg: #42414d;
             --danger: #ff5a5a;
-            --sidebar-width: 210px; 
+            --nav-width: 50px;
+            --panel-width: 250px;
         }
 
         body {
-            margin: 0;
-            padding: 0;
+            margin: 0; padding: 0;
             background-color: var(--bg-color);
             color: var(--text-main);
             font-family: 'Inter', -apple-system, system-ui, sans-serif;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
+            display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* --- SIDEBARS --- */
-        .sidebar {
-            width: var(--sidebar-width);
+        /* --- MASTER ICON SIDEBAR --- */
+        .master-nav {
+            width: var(--nav-width);
+            background-color: var(--master-nav-bg);
+            border-right: 1px solid var(--border-gray);
+            display: flex; flex-direction: column;
+            align-items: center; padding-top: 20px; gap: 20px;
+            z-index: 100;
+        }
+
+        .nav-icon {
+            font-size: 1.2rem; cursor: pointer;
+            opacity: 0.6; transition: all 0.2s;
+            padding: 10px; border-radius: 8px;
+        }
+        .nav-icon:hover, .nav-icon.active { opacity: 1; background: var(--input-bg); }
+        .nav-icon.active { color: var(--accent-purple); border: 1px solid var(--accent-purple); }
+
+        /* --- POPUP PANELS --- */
+        .panel {
+            position: absolute;
+            left: var(--nav-width);
+            top: 0; bottom: 0;
+            width: var(--panel-width);
             background-color: var(--sidebar-bg);
             border-right: 1px solid var(--border-gray);
-            display: flex;
-            flex-direction: column;
-            padding: 15px;
-            flex-shrink: 0;
+            display: flex; flex-direction: column;
+            padding: 20px;
+            transform: translateX(-110%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.3);
         }
 
-        .sidebar-right {
-            border-right: none;
-            border-left: 1px solid var(--border-gray);
-        }
+        .panel.open { transform: translateX(0); }
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            margin-bottom: 15px;
-        }
-
-        .input-box {
-            width: 100%;
-            padding: 6px 10px; 
-            background: var(--input-bg);
-            border: 1px solid transparent;
-            border-radius: 4px;
+        /* --- NOTES TEXTAREA --- */
+        #notes-scratchpad {
+            flex-grow: 1;
+            background: transparent;
+            border: none;
             color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            resize: none;
             outline: none;
-            box-sizing: border-box;
-            font-size: 0.8rem;
+            padding-top: 10px;
         }
 
-        .input-box:focus { border-color: var(--accent-purple); }
-
-        .list-container {
-            flex-grow: 1;
-            overflow-y: auto;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .list-item {
-            padding: 8px 0;
-            border-bottom: 1px solid var(--border-gray);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            line-height: 1.2;
-        }
-
-        /* BIGGER NOTES TEXT */
-        .note-text {
-            word-break: break-word;
-            padding-right: 8px;
-            font-size: 1.15rem; 
-            font-weight: 500;
+        /* --- ALIAS MANAGER --- */
+        .alias-header { margin-bottom: 15px; }
+        .alias-search {
+            width: 100%;
+            padding: 8px 12px;
+            background: var(--master-nav-bg);
+            border: 1px solid var(--border-gray);
+            border-radius: 6px;
             color: var(--text-main);
-        }
-
-        .alias-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .alias-tag {
-            font-size: 0.65rem;
-            color: var(--accent-blue);
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .fav-link {
-            font-size: 0.85rem;
-            text-decoration: none;
-            color: var(--text-muted);
-        }
-
-        .fav-link:hover { color: var(--text-main); }
-
-        .controls {
-            display: flex;
-            gap: 6px;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        .icon-btn {
-            cursor: pointer;
             font-size: 0.8rem;
-            transition: color 0.2s;
-            user-select: none;
-            opacity: 0.6;
+            margin-bottom: 15px;
+            outline: none;
         }
+        .alias-search:focus { border-color: var(--accent-blue); }
 
-        .icon-btn:hover { opacity: 1; }
-        .lock-btn.active { color: var(--accent-blue); opacity: 1; }
-        .delete-btn:hover { color: var(--danger); }
+        .alias-add-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid var(--border-gray); }
 
-        /* --- MAIN CONTENT --- */
+        /* --- SEARCH CONTENT --- */
         .main-content {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 18vh;
+            flex-grow: 1; display: flex; flex-direction: column;
+            align-items: center; padding-top: 18vh;
         }
-
-        .search-container {
-            width: 100%;
-            max-width: 480px;
-            text-align: center;
-        }
-
+        .search-container { width: 100%; max-width: 480px; text-align: center; position: relative; }
         .search-bar {
-            width: 100%;
-            padding: 12px 18px;
+            width: 100%; padding: 12px 18px;
             background: var(--input-bg);
             border: 1px solid var(--border-gray);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 1.1rem;
-            outline: none;
-            box-sizing: border-box;
+            border-radius: 8px; color: var(--text-main);
+            font-size: 1.1rem; outline: none; box-sizing: border-box;
         }
-
         .search-bar:focus { box-shadow: 0 0 0 2px var(--accent-purple); }
 
+        .search-preview {
+            position: absolute; top: 100%; left: 0; right: 0;
+            margin-top: 10px; padding: 12px;
+            background: var(--sidebar-bg);
+            border: 1px solid var(--accent-purple);
+            border-radius: 8px; text-align: left;
+            font-size: 0.9rem; color: var(--text-muted);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: none; z-index: 10;
+        }
+
+        .preview-label { font-size: 0.7rem; text-transform: uppercase; color: var(--accent-purple); margin-bottom: 4px; display: block; }
+        .preview-dest { color: var(--text-main); font-weight: 500; word-break: break-all; }
+
+        .input-box {
+            width: 100%; padding: 8px 10px; background: var(--input-bg);
+            border: 1px solid transparent; border-radius: 4px;
+            color: var(--text-main); outline: none;
+        }
+        .list-container { flex-grow: 1; overflow-y: auto; list-style: none; padding: 0; }
+        .list-item { padding: 8px 0; border-bottom: 1px solid var(--border-gray); display: flex; justify-content: space-between; align-items: flex-start; }
+        .alias-tag { font-size: 0.65rem; color: var(--accent-blue); font-weight: bold; text-transform: uppercase; }
+        .fav-link { font-size: 0.85rem; text-decoration: none; color: var(--text-muted); }
+        .fav-link:hover { color: var(--text-main); }
+        .controls { display: flex; gap: 6px; }
+        .icon-btn { cursor: pointer; opacity: 0.6; }
+        .icon-btn:hover { opacity: 1; }
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: var(--border-gray); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <!-- Left Sidebar: Notes -->
-    <aside class="sidebar">
-        <input type="text" id="note-input" class="input-box" placeholder="note" autocomplete="off">
-        <ul id="notes-list" class="list-container"></ul>
+    <nav class="master-nav">
+        <div class="nav-icon" id="btn-notes" onclick="togglePanel('panel-notes', 'btn-notes')" title="Notes">📝</div>
+        <div class="nav-icon" id="btn-aliases" onclick="togglePanel('panel-aliases', 'btn-aliases')" title="Aliases">🔗</div>
+    </nav>
+
+    <aside id="panel-notes" class="panel">
+        <h3 style="margin-top:0; font-size: 0.9rem; color: var(--accent-purple)">SCRATCHPAD</h3>
+        <textarea id="notes-scratchpad" placeholder="Type notes here... they save automatically."></textarea>
     </aside>
 
-    <!-- Center: Search -->
+    <aside id="panel-aliases" class="panel">
+        <h3 style="margin-top:0; font-size: 0.9rem; color: var(--accent-blue)">ALIASES</h3>
+        
+        <input type="text" id="alias-filter" class="alias-search" placeholder="Filter aliases..." autocomplete="off">
+
+        <div class="alias-add-group">
+            <input type="text" id="alias-key" class="input-box" placeholder="key (e.g. g)" autocomplete="off">
+            <input type="text" id="alias-url" class="input-box" placeholder="url" autocomplete="off">
+        </div>
+        
+        <ul id="alias-list" class="list-container"></ul>
+    </aside>
+
     <main class="main-content">
         <div class="search-container">
             <form id="search-form" action="https://duckduckgo.com/" method="get">
                 <input type="text" name="q" id="main-search" class="search-bar" placeholder="search" autofocus autocomplete="off">
             </form>
+            <div id="search-preview" class="search-preview">
+                <span class="preview-label" id="preview-label">Destination</span>
+                <span id="preview-text" class="preview-dest"></span>
+            </div>
         </div>
     </main>
 
-    <!-- Right Sidebar: Alias Manager -->
-    <aside class="sidebar sidebar-right">
-        <div class="input-group">
-            <input type="text" id="alias-key" class="input-box" placeholder="key" autocomplete="off">
-            <input type="text" id="alias-url" class="input-box" placeholder="url" autocomplete="off">
-        </div>
-        <ul id="alias-list" class="list-container"></ul>
-    </aside>
-
     <script>
-        /* --- DATA PERSISTENCE --- */
-        let notes = JSON.parse(localStorage.getItem('my-notes-v5')) || [];
+        function togglePanel(panelId, btnId) {
+            const panels = ['panel-notes', 'panel-aliases'];
+            const buttons = ['btn-notes', 'btn-aliases'];
+            const targetPanel = document.getElementById(panelId);
+            const targetBtn = document.getElementById(btnId);
+            const isOpen = targetPanel.classList.contains('open');
+
+            panels.forEach(id => document.getElementById(id).classList.remove('open'));
+            buttons.forEach(id => document.getElementById(id).classList.remove('active'));
+
+            if (!isOpen) {
+                targetPanel.classList.add('open');
+                targetBtn.classList.add('active');
+                if(panelId === 'panel-aliases') document.getElementById('alias-filter').focus();
+            }
+        }
+
+        /* --- NOTES LOGIC --- */
+        const scratchpad = document.getElementById('notes-scratchpad');
+        scratchpad.value = localStorage.getItem('my-scratchpad-v1') || "";
+        scratchpad.addEventListener('input', () => {
+            localStorage.setItem('my-scratchpad-v1', scratchpad.value);
+        });
+
+        /* --- ALIAS LOGIC --- */
         let aliases = JSON.parse(localStorage.getItem('my-aliases-v5')) || {
             'g': { name: 'Gemini', url: 'https://gemini.google.com' },
             'gh': { name: 'GitHub', url: 'https://github.com' }
         };
 
-        const noteInput = document.getElementById('note-input');
-        const notesList = document.getElementById('notes-list');
-        const aliasKeyInput = document.getElementById('alias-key');
-        const aliasUrlInput = document.getElementById('alias-url');
         const aliasList = document.getElementById('alias-list');
-        const mainSearch = document.getElementById('main-search');
-        const searchForm = document.getElementById('search-form');
+        const aliasFilter = document.getElementById('alias-filter');
 
-        /* --- SMART SEARCH --- */
-        searchForm.addEventListener('submit', (e) => {
-            const query = mainSearch.value.trim().toLowerCase();
-            
-            // Check if search bar is empty
-            if (!query) {
-                e.preventDefault();
-                return;
-            }
-
-            // Check alias storage first
-            if (aliases[query]) {
-                e.preventDefault();
-                window.location.href = aliases[query].url;
-            } else if (query.includes('.') && !query.includes(' ')) {
-                // Direct URL navigation if it looks like a domain
-                e.preventDefault();
-                window.location.href = query.startsWith('http') ? query : `https://${query}`;
-            }
-        });
-
-        /* --- NOTES LOGIC --- */
-        function renderNotes() {
-            notesList.innerHTML = '';
-            notes.forEach((n, i) => {
-                const li = document.createElement('li');
-                li.className = 'list-item';
-                li.innerHTML = `
-                    <span class="note-text">${n.text}</span>
-                    <div class="controls">
-                        <span class="icon-btn lock-btn ${n.locked ? 'active' : ''}" onclick="toggleNoteLock(${i})">${n.locked ? '🔒' : '🔓'}</span>
-                        <span class="icon-btn delete-btn" onclick="deleteNote(${i})" style="${n.locked ? 'opacity:0.1; cursor:default' : ''}">&times;</span>
-                    </div>`;
-                notesList.appendChild(li);
-            });
-        }
-
-        function addNote() {
-            const val = noteInput.value.trim();
-            if (val) {
-                notes.unshift({ text: val, locked: false });
-                noteInput.value = '';
-                saveNotes();
-            }
-        }
-
-        window.toggleNoteLock = (i) => { notes[i].locked = !notes[i].locked; saveNotes(); };
-        window.deleteNote = (i) => { if (!notes[i].locked) { notes.splice(i, 1); saveNotes(); } };
-        
-        function saveNotes() { 
-            localStorage.setItem('my-notes-v5', JSON.stringify(notes)); 
-            renderNotes(); 
-        }
-
-        /* --- ALIAS LOGIC --- */
-        function renderAliases() {
+        function renderAliases(filter = "") {
             aliasList.innerHTML = '';
+            const f = filter.toLowerCase();
+            
             Object.keys(aliases).forEach(key => {
                 const item = aliases[key];
-                const li = document.createElement('li');
-                li.className = 'list-item';
-                li.innerHTML = `
-                    <div class="alias-info">
-                        <span class="alias-tag">${key}</span>
-                        <a href="${item.url}" class="fav-link" target="_blank">${item.name}</a>
-                    </div>
-                    <div class="controls">
-                        <span class="icon-btn" onclick="editAlias('${key}')">✏️</span>
-                        <span class="icon-btn delete-btn" onclick="deleteAlias('${key}')">&times;</span>
-                    </div>`;
-                aliasList.appendChild(li);
+                if (key.includes(f) || item.name.toLowerCase().includes(f)) {
+                    const li = document.createElement('li');
+                    li.className = 'list-item';
+                    li.innerHTML = `
+                        <div class="alias-info">
+                            <span class="alias-tag">${key}</span><br>
+                            <a href="${item.url}" class="fav-link" target="_blank">${item.name}</a>
+                        </div>
+                        <div class="controls">
+                            <span class="icon-btn" onclick="editAlias('${key}')">✏️</span>
+                            <span class="icon-btn delete-btn" onclick="deleteAlias('${key}')">&times;</span>
+                        </div>`;
+                    aliasList.appendChild(li);
+                }
             });
         }
+
+        aliasFilter.addEventListener('input', (e) => renderAliases(e.target.value));
+
+        const aliasKeyInput = document.getElementById('alias-key');
+        const aliasUrlInput = document.getElementById('alias-url');
 
         function handleAliasSubmit(e) {
             if (e.key === 'Enter') {
                 const key = aliasKeyInput.value.trim().toLowerCase();
                 let url = aliasUrlInput.value.trim();
-                
                 if (key && url) {
                     if (!url.startsWith('http')) url = 'https://' + url;
                     const name = url.replace('https://', '').replace('www.', '').split(/[/?#]/)[0];
                     aliases[key] = { name: name.charAt(0).toUpperCase() + name.slice(1), url: url };
-                    
-                    aliasKeyInput.value = '';
-                    aliasUrlInput.value = '';
+                    aliasKeyInput.value = ''; aliasUrlInput.value = '';
                     saveAliases();
                 }
             }
         }
 
         window.deleteAlias = (key) => { delete aliases[key]; saveAliases(); };
-        
         window.editAlias = (key) => {
-            aliasKeyInput.value = key;
-            aliasUrlInput.value = aliases[key].url;
-            delete aliases[key]; 
-            saveAliases();
-            aliasKeyInput.focus();
+            aliasKeyInput.value = key; aliasUrlInput.value = aliases[key].url;
+            delete aliases[key]; saveAliases(); aliasKeyInput.focus();
         };
-
         function saveAliases() { 
             localStorage.setItem('my-aliases-v5', JSON.stringify(aliases)); 
-            renderAliases(); 
+            renderAliases(aliasFilter.value); 
         }
 
-        /* --- EVENT LISTENERS --- */
-        noteInput.addEventListener("keydown", (e) => e.key === 'Enter' && addNote());
         aliasKeyInput.addEventListener("keydown", handleAliasSubmit);
         aliasUrlInput.addEventListener("keydown", handleAliasSubmit);
 
-        renderNotes();
+        /* --- SEARCH LOGIC --- */
+        const mainSearch = document.getElementById('main-search');
+        const searchForm = document.getElementById('search-form');
+        const searchPreview = document.getElementById('search-preview');
+        const previewText = document.getElementById('preview-text');
+        const previewLabel = document.getElementById('preview-label');
+
+        function getAutocompleteMatch(query) {
+            if (!query) return null;
+            return Object.values(aliases).find(a => 
+                a.name.toLowerCase().startsWith(query) || 
+                a.url.toLowerCase().replace('https://','').replace('www.','').startsWith(query)
+            );
+        }
+
+        mainSearch.addEventListener('input', () => {
+            const query = mainSearch.value.trim().toLowerCase();
+            if (!query) { searchPreview.style.display = 'none'; return; }
+            searchPreview.style.display = 'block';
+            const autoMatch = getAutocompleteMatch(query);
+
+            if (query.startsWith('!')) {
+                const term = query.slice(1).trim() || "...";
+                previewLabel.innerText = "Force Search";
+                previewText.innerHTML = `<span style="color:var(--accent-purple)">"${term}"</span>`;
+            } else if (aliases[query]) {
+                previewLabel.innerText = "Alias Match";
+                previewText.innerHTML = `<span style="color:var(--accent-blue)">${aliases[query].name}</span>`;
+            } else if (autoMatch) {
+                previewLabel.innerText = "Autocomplete Match";
+                previewText.innerHTML = `<span style="color:var(--accent-blue)">${autoMatch.name}</span>`;
+            } else if (query.includes('.') && !query.includes(' ')) {
+                const url = query.startsWith('http') ? query : `https://${query}`;
+                previewLabel.innerText = "Direct URL";
+                previewText.innerHTML = `<span style="color:var(--accent-blue)">${url}</span>`;
+            } else {
+                previewLabel.innerText = "Search DuckDuckGo";
+                previewText.innerHTML = `<span style="color:var(--accent-purple)">"${query}"</span>`;
+            }
+        });
+
+        searchForm.addEventListener('submit', (e) => {
+            let query = mainSearch.value.trim().toLowerCase();
+            if (!query) { e.preventDefault(); return; }
+            if (query.startsWith('!')) {
+                e.preventDefault();
+                const term = query.slice(1).trim();
+                if (term) window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(term)}`;
+                return;
+            }
+            const autoMatch = getAutocompleteMatch(query);
+            if (aliases[query]) { e.preventDefault(); window.location.href = aliases[query].url; } 
+            else if (autoMatch) { e.preventDefault(); window.location.href = autoMatch.url; }
+            else if (query.includes('.') && !query.includes(' ')) { e.preventDefault(); window.location.href = query.startsWith('http') ? query : `https://${query}`; }
+        });
+
         renderAliases();
     </script>
 </body>
