@@ -180,6 +180,8 @@
     </main>
 
     <script>
+        const alias_name = 'hiiii'
+
         function solveMath(query) {
             if (!/[0-9]/.test(query) || !/[\+\-\*\/\^\(\)]|sqrt/.test(query)) return null;
 
@@ -227,7 +229,7 @@
 
         /* --- NOTES LOGIC --- */
         const scratchpad = document.getElementById('notes-scratchpad');
-        scratchpad.value = localStorage.getItem('vafebtwrhyttbfd') || "";
+        scratchpad.value = localStorage.getItem(alias_name) || "";
         scratchpad.addEventListener('input', () => {
             localStorage.setItem('my-scratchpad-v1', scratchpad.value);
         });
@@ -235,6 +237,7 @@
         /* --- ALIAS LOGIC --- */
         let aliases = JSON.parse(localStorage.getItem('698498')) || {
             'gemini': 'https://gemini.google.com',
+            'youtube': 'https://youtube.com',
             'github': 'https://github.com',
             '1337': 'https://1337x.to/',
             'canvas': 'https://rutgers.instructure.com/',
@@ -300,7 +303,7 @@
 
         window.deleteAlias = (key) => { delete aliases[key]; saveAliases(); };
         function saveAliases() { 
-            localStorage.setItem('my-aliases-v5', JSON.stringify(aliases)); 
+            localStorage.setItem(alias_name, JSON.stringify(aliases)); 
             renderAliases(aliasFilter.value); 
         }
 
