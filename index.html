@@ -90,6 +90,7 @@
             font-size: 0.8rem;
             margin-bottom: 15px;
             outline: none;
+            box-sizing: border-box;
         }
         .alias-search:focus { border-color: var(--accent-blue); }
 
@@ -128,6 +129,7 @@
             width: 100%; padding: 8px 10px; background: var(--input-bg);
             border: 1px solid transparent; border-radius: 4px;
             color: var(--text-main); outline: none;
+            box-sizing: border-box;
         }
         .list-container { flex-grow: 1; overflow-y: auto; list-style: none; padding: 0; }
         .list-item { padding: 8px 0; border-bottom: 1px solid var(--border-gray); display: flex; justify-content: space-between; align-items: flex-start; }
@@ -197,7 +199,7 @@
 
         /* --- NOTES LOGIC --- */
         const scratchpad = document.getElementById('notes-scratchpad');
-        scratchpad.value = localStorage.getItem('my-scratchpad-v1') || "";
+        scratchpad.value = localStorage.getItem('vafebtwrhyttbfd') || "";
         scratchpad.addEventListener('input', () => {
             localStorage.setItem('my-scratchpad-v1', scratchpad.value);
         });
