@@ -149,17 +149,16 @@
     </nav>
 
     <aside id="panel-notes" class="panel">
-        <h3 style="margin-top:0; font-size: 0.9rem; color: var(--accent-purple)">SCRATCHPAD</h3>
-        <textarea id="notes-scratchpad" placeholder="Type notes here... they save automatically."></textarea>
+        <textarea id="notes-scratchpad" placeholder="notes"></textarea>
     </aside>
 
     <aside id="panel-aliases" class="panel">
         <h3 style="margin-top:0; font-size: 0.9rem; color: var(--accent-blue)">ALIASES</h3>
         
-        <input type="text" id="alias-filter" class="alias-search" placeholder="Filter aliases..." autocomplete="off">
+        <input type="text" id="alias-filter" class="alias-search" placeholder="filter" autocomplete="off">
 
         <div class="alias-add-group">
-            <input type="text" id="alias-key" class="input-box" placeholder="key (e.g. g)" autocomplete="off">
+            <input type="text" id="alias-key" class="input-box" placeholder="key" autocomplete="off">
             <input type="text" id="alias-url" class="input-box" placeholder="url" autocomplete="off">
         </div>
         
@@ -204,9 +203,17 @@
         });
 
         /* --- ALIAS LOGIC --- */
-        let aliases = JSON.parse(localStorage.getItem('my-aliases-v5')) || {
-            'g': { name: 'Gemini', url: 'https://gemini.google.com' },
-            'gh': { name: 'GitHub', url: 'https://github.com' }
+        let aliases = JSON.parse(localStorage.getItem('my-aliases')) || {
+            'g': 'https://gemini.google.com',
+            'gh': 'https://github.com',
+            '1337': 'https://1337x.to/',
+            'can': 'https://rutgers.instructure.com/',
+            'ro': 'https://roblox.com',
+            'doc': 'https://docs.google.com/',
+            'web': 'https://sims.rutgers.edu/webreg/',
+            'm': 'https://mail.google.com/mail/u/0/#inbox',
+            'mal': 'https://myanimelist.net/profile/noobo',
+            'red': 'https://www.reddit.com/'
         };
 
         const aliasList = document.getElementById('alias-list');
@@ -217,14 +224,14 @@
             const f = filter.toLowerCase();
             
             Object.keys(aliases).forEach(key => {
-                const item = aliases[key];
-                if (key.includes(f) || item.name.toLowerCase().includes(f)) {
+                const url = aliases[key];
+                if (key.includes(f) || url.toLowerCase().includes(f)) {
                     const li = document.createElement('li');
                     li.className = 'list-item';
                     li.innerHTML = `
                         <div class="alias-info">
                             <span class="alias-tag">${key}</span><br>
-                            <a href="${item.url}" class="fav-link" target="_blank">${item.name}</a>
+                            <a href="${url}" class="fav-link" target="_blank">${url.replace('https://', '').replace('www.', '')}</a>
                         </div>
                         <div class="controls">
                             <span class="icon-btn" onclick="editAlias('${key}')">✏️</span>
@@ -246,19 +253,22 @@
                 let url = aliasUrlInput.value.trim();
                 if (key && url) {
                     if (!url.startsWith('http')) url = 'https://' + url;
-                    const name = url.replace('https://', '').replace('www.', '').split(/[/?#]/)[0];
-                    aliases[key] = { name: name.charAt(0).toUpperCase() + name.slice(1), url: url };
+                    aliases[key] = url; // Save URL directly to the key
                     aliasKeyInput.value = ''; aliasUrlInput.value = '';
                     saveAliases();
                 }
             }
         }
 
-        window.deleteAlias = (key) => { delete aliases[key]; saveAliases(); };
         window.editAlias = (key) => {
-            aliasKeyInput.value = key; aliasUrlInput.value = aliases[key].url;
-            delete aliases[key]; saveAliases(); aliasKeyInput.focus();
+            aliasKeyInput.value = key; 
+            aliasUrlInput.value = aliases[key]; // URL is now the value itself
+            delete aliases[key]; 
+            saveAliases(); 
+            aliasKeyInput.focus();
         };
+
+        window.deleteAlias = (key) => { delete aliases[key]; saveAliases(); };
         function saveAliases() { 
             localStorage.setItem('my-aliases-v5', JSON.stringify(aliases)); 
             renderAliases(aliasFilter.value); 
@@ -276,10 +286,14 @@
 
         function getAutocompleteMatch(query) {
             if (!query) return null;
-            return Object.values(aliases).find(a => 
-                a.name.toLowerCase().startsWith(query) || 
-                a.url.toLowerCase().replace('https://','').replace('www.','').startsWith(query)
-            );
+            // Look for keys that start with the query, or URLs that contain it
+            const matchKey = Object.keys(aliases).find(key => key.startsWith(query));
+            if (matchKey) return { key: matchKey, url: aliases[matchKey] };
+            
+            const matchUrl = Object.values(aliases).find(url => url.includes(query));
+            if (matchUrl) return { key: null, url: matchUrl };
+            
+            return null;
         }
 
         mainSearch.addEventListener('input', () => {
@@ -289,15 +303,14 @@
             const autoMatch = getAutocompleteMatch(query);
 
             if (query.startsWith('!')) {
-                const term = query.slice(1).trim() || "...";
                 previewLabel.innerText = "Force Search";
-                previewText.innerHTML = `<span style="color:var(--accent-purple)">"${term}"</span>`;
+                previewText.innerHTML = `<span style="color:var(--accent-purple)">"${query.slice(1).trim()}"</span>`;
             } else if (aliases[query]) {
                 previewLabel.innerText = "Alias Match";
-                previewText.innerHTML = `<span style="color:var(--accent-blue)">${aliases[query].name}</span>`;
+                previewText.innerHTML = `<span style="color:var(--accent-blue)">${aliases[query]}</span>`;
             } else if (autoMatch) {
                 previewLabel.innerText = "Autocomplete Match";
-                previewText.innerHTML = `<span style="color:var(--accent-blue)">${autoMatch.name}</span>`;
+                previewText.innerHTML = `<span style="color:var(--accent-blue)">${autoMatch.url}</span>`;
             } else if (query.includes('.') && !query.includes(' ')) {
                 const url = query.startsWith('http') ? query : `https://${query}`;
                 previewLabel.innerText = "Direct URL";
@@ -313,12 +326,11 @@
             if (!query) { e.preventDefault(); return; }
             if (query.startsWith('!')) {
                 e.preventDefault();
-                const term = query.slice(1).trim();
-                if (term) window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(term)}`;
+                window.location.href = `https://duckduckgo.com/?q=${encodeURIComponent(query.slice(1).trim())}`;
                 return;
             }
             const autoMatch = getAutocompleteMatch(query);
-            if (aliases[query]) { e.preventDefault(); window.location.href = aliases[query].url; } 
+            if (aliases[query]) { e.preventDefault(); window.location.href = aliases[query]; } 
             else if (autoMatch) { e.preventDefault(); window.location.href = autoMatch.url; }
             else if (query.includes('.') && !query.includes(' ')) { e.preventDefault(); window.location.href = query.startsWith('http') ? query : `https://${query}`; }
         });
