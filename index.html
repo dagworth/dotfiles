@@ -180,6 +180,34 @@
     </main>
 
     <script>
+        function solveMath(query) {
+            if (!/[0-9]/.test(query) || !/[\+\-\*\/\^\(\)]|sqrt/.test(query)) return null;
+
+            try {
+                let expression = query
+                    .replace(/\^/g, '**')
+                    .replace(/sqrt/g, 'Math.sqrt')
+                    .replace(/(\d)\(/g, '$1*(')
+                    .replace(/\)(\d)/g, ')*$1');
+
+                const openCount = (expression.match(/\(/g) || []).length;
+                const closeCount = (expression.match(/\)/g) || []).length;
+
+                if (openCount < closeCount) {
+                    expression = '('.repeat(closeCount - openCount) + expression;
+                } else if (openCount > closeCount) {
+                    // Extra ( on the left: add ) to the very end
+                    expression = expression + ')'.repeat(openCount - closeCount);
+                }
+
+                const result = new Function(`return ${expression}`)();
+                
+                return (typeof result === 'number' && isFinite(result)) ? result : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
         function togglePanel(panelId, btnId) {
             const panels = ['panel-notes', 'panel-aliases'];
             const buttons = ['btn-notes', 'btn-aliases'];
@@ -205,17 +233,17 @@
         });
 
         /* --- ALIAS LOGIC --- */
-        let aliases = JSON.parse(localStorage.getItem('my-aliases')) || {
-            'g': 'https://gemini.google.com',
-            'gh': 'https://github.com',
+        let aliases = JSON.parse(localStorage.getItem('698498')) || {
+            'gemini': 'https://gemini.google.com',
+            'github': 'https://github.com',
             '1337': 'https://1337x.to/',
-            'can': 'https://rutgers.instructure.com/',
-            'ro': 'https://roblox.com',
-            'doc': 'https://docs.google.com/',
-            'web': 'https://sims.rutgers.edu/webreg/',
-            'm': 'https://mail.google.com/mail/u/0/#inbox',
+            'canvas': 'https://rutgers.instructure.com/',
+            'roblox': 'https://roblox.com',
+            'docs': 'https://docs.google.com/',
+            'webreg': 'https://sims.rutgers.edu/webreg/',
+            'mail': 'https://mail.google.com/mail/u/0/#inbox',
             'mal': 'https://myanimelist.net/profile/noobo',
-            'red': 'https://www.reddit.com/'
+            'reddit': 'https://www.reddit.com/'
         };
 
         const aliasList = document.getElementById('alias-list');
@@ -264,7 +292,7 @@
 
         window.editAlias = (key) => {
             aliasKeyInput.value = key; 
-            aliasUrlInput.value = aliases[key]; // URL is now the value itself
+            aliasUrlInput.value = aliases[key];
             delete aliases[key]; 
             saveAliases(); 
             aliasKeyInput.focus();
@@ -288,7 +316,6 @@
 
         function getAutocompleteMatch(query) {
             if (!query) return null;
-            // Look for keys that start with the query, or URLs that contain it
             const matchKey = Object.keys(aliases).find(key => key.startsWith(query));
             if (matchKey) return { key: matchKey, url: aliases[matchKey] };
             
@@ -299,29 +326,34 @@
         }
 
         mainSearch.addEventListener('input', () => {
-            const query = mainSearch.value.trim().toLowerCase();
-            if (!query) { searchPreview.style.display = 'none'; return; }
-            searchPreview.style.display = 'block';
-            const autoMatch = getAutocompleteMatch(query);
+    const query = mainSearch.value.trim().toLowerCase();
+        if (!query) { searchPreview.style.display = 'none'; return; }
+        
+        searchPreview.style.display = 'block';
+        const autoMatch = getAutocompleteMatch(query);
+        const mathResult = solveMath(query);
 
-            if (query.startsWith('!')) {
-                previewLabel.innerText = "Force Search";
-                previewText.innerHTML = `<span style="color:var(--accent-purple)">"${query.slice(1).trim()}"</span>`;
-            } else if (aliases[query]) {
-                previewLabel.innerText = "Alias Match";
-                previewText.innerHTML = `<span style="color:var(--accent-blue)">${aliases[query]}</span>`;
-            } else if (autoMatch) {
-                previewLabel.innerText = "Autocomplete Match";
-                previewText.innerHTML = `<span style="color:var(--accent-blue)">${autoMatch.url}</span>`;
-            } else if (query.includes('.') && !query.includes(' ')) {
-                const url = query.startsWith('http') ? query : `https://${query}`;
-                previewLabel.innerText = "Direct URL";
-                previewText.innerHTML = `<span style="color:var(--accent-blue)">${url}</span>`;
-            } else {
-                previewLabel.innerText = "Search DuckDuckGo";
-                previewText.innerHTML = `<span style="color:var(--accent-purple)">"${query}"</span>`;
-            }
-        });
+        if (query.startsWith('!')) {
+            previewLabel.innerText = "Force Search";
+            previewText.innerHTML = `<span style="color:var(--accent-purple)">"${query.slice(1).trim()}"</span>`;
+        } else if (mathResult !== null) {
+            previewLabel.innerText = "Calculator";
+            previewText.innerHTML = `<span style="color:var(--accent-blue)">= ${mathResult}</span>`;
+        } else if (aliases[query]) {
+            previewLabel.innerText = "Alias Match";
+            previewText.innerHTML = `<span style="color:var(--accent-blue)">${aliases[query]}</span>`;
+        } else if (autoMatch) {
+            previewLabel.innerText = "Autocomplete Match";
+            previewText.innerHTML = `<span style="color:var(--accent-blue)">${autoMatch.url}</span>`;
+        } else if (query.includes('.') && !query.includes(' ')) {
+            const url = query.startsWith('http') ? query : `https://${query}`;
+            previewLabel.innerText = "Direct URL";
+            previewText.innerHTML = `<span style="color:var(--accent-blue)">${url}</span>`;
+        } else {
+            previewLabel.innerText = "Search DuckDuckGo";
+            previewText.innerHTML = `<span style="color:var(--accent-purple)">"${query}"</span>`;
+        }
+    });
 
         searchForm.addEventListener('submit', (e) => {
             let query = mainSearch.value.trim().toLowerCase();
