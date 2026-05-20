@@ -9,10 +9,10 @@ import QtQuick.Effects
 Rectangle {
     id: spotifyBubble
     color: backgroundColor
-    radius: 5
+    radius: 12
     Layout.alignment: Qt.AlignTop
-    Layout.preferredHeight: 30
-    Layout.topMargin: 6
+    Layout.preferredHeight: 60
+    Layout.topMargin: 15
 
     property var spotifyPlayer: {
         if (!Mpris.players || !Mpris.players.values) return null;
@@ -31,17 +31,17 @@ Rectangle {
         return (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
     }
 
-    Layout.preferredWidth: 180
+    Layout.preferredWidth: 360
 
     RowLayout {
         anchors.fill: parent
-        anchors.leftMargin: 3
-        anchors.rightMargin: 10
-        spacing: 4
+        anchors.leftMargin: 6
+        anchors.rightMargin: 15
+        spacing: 10
 
         Item {
-            Layout.preferredWidth: 25
-            Layout.preferredHeight: 25
+            Layout.preferredWidth: 50
+            Layout.preferredHeight: 50
             Layout.alignment: Qt.AlignVCenter
 
             Image {
@@ -56,24 +56,26 @@ Rectangle {
             Rectangle {
                 id: maskShape
                 anchors.fill: parent
-                radius: 4
+                radius: 12
                 visible: false
+                layer.enabled: true
             }
 
             MultiEffect {
                 anchors.fill: parent
                 source: albumArt
                 maskSource: maskShape
+                maskEnabled: true
             }
         }
 
         ColumnLayout {
-            spacing: 0
+            spacing: 2
             Text {
-                text: spotifyPlayer ? (spotifyPlayer.trackArtist + " - " + spotifyPlayer.trackTitle) : "spotify down :("
+                text: spotifyPlayer ? (spotifyPlayer.trackTitle + " - " + spotifyPlayer.trackArtist) : "spotify down :("
                 color: "#cdd6f4"
                 font.family: custom_font.name
-                font.pixelSize: 9
+                font.pixelSize: 17
                 font.bold: true
                 elide: Text.ElideRight
                 Layout.fillWidth: true
@@ -83,43 +85,43 @@ Rectangle {
                 font.family: custom_font.name
                 text: spotifyPlayer ? (spotifyBubble.formatTime(spotifyPlayer.position) + " / " + spotifyBubble.formatTime(spotifyPlayer.length)) : "??:?? / ??:??"
                 color: '#9ca6adc8' 
-                font.pixelSize: 8
+                font.pixelSize: 14
                 font.bold: true
             }
         }
 
         RowLayout {
-            spacing: 10
+            spacing: 15
             Layout.alignment: Qt.AlignVCenter
 
             //back
             Text {
                 text: "󰒮"
-                font.pixelSize: 11
+                font.pixelSize: 25
                 color: "#cdd6f4"
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: if (root.spotifyPlayer && root.spotifyPlayer.canGoPrevious) root.spotifyPlayer.previous()
+                    onClicked: if (spotifyPlayer && spotifyPlayer.canGoPrevious) spotifyPlayer.previous()
                 }
             }
 
             //pause
             Text {
-                property bool isPlaying: root.spotifyPlayer && root.spotifyPlayer.playbackState === MprisPlaybackState.Playing
+                property bool isPlaying: spotifyPlayer && spotifyPlayer.playbackState === MprisPlaybackState.Playing
                 text: isPlaying ? "󰏤" : "󰐊"
-                font.pixelSize: 13
+                font.pixelSize: 30
                 color: "#cdd6f4"
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
                     
                     onClicked: {
-                        if (root.spotifyPlayer) {
+                        if (spotifyPlayer) {
                             if (parent.isPlaying) {
-                                root.spotifyPlayer.playbackState = MprisPlaybackState.Paused;
+                                spotifyPlayer.playbackState = MprisPlaybackState.Paused;
                             } else {
-                                root.spotifyPlayer.playbackState = MprisPlaybackState.Playing;
+                                spotifyPlayer.playbackState = MprisPlaybackState.Playing;
                             }
                         }
                     }
@@ -129,14 +131,23 @@ Rectangle {
             //next
             Text {
                 text: "󰒭"
-                font.pixelSize: 11
+                font.pixelSize: 25
                 color: "#cdd6f4"
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: if (root.spotifyPlayer && root.spotifyPlayer.canGoNext) root.spotifyPlayer.next()
+                    onClicked: if (spotifyPlayer && spotifyPlayer.canGoNext) spotifyPlayer.next()
                 }
             }
+        }
+    }
+
+    Timer {
+        running: spotifyPlayer && spotifyPlayer.playbackState === MprisPlaybackState.Playing
+        interval: 1000
+        repeat: true
+        onTriggered: {
+            spotifyPlayer.positionChanged()
         }
     }
 }

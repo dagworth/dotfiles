@@ -1,5 +1,5 @@
 hl.on("hyprland.start", function ()
-  hl.exec_cmd("waybar & hyprpaper & firefox & spotify-launcher")
+  hl.exec_cmd("quickshell & hyprpaper & firefox & spotify-launcher")
 end)
 
 -- swaync and yazi

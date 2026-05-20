@@ -8,7 +8,7 @@ hl.config({
 
         follow_mouse = 1,
 
-        sensitivity = .65,
+        sensitivity = 1,
         accel_profile = "flat",
 
         touchpad = {

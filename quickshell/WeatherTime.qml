@@ -5,11 +5,12 @@ import Quickshell.Io
 
 Rectangle {
     id: weatherTime
-    anchors.centerIn: parent
     color: backgroundColor
-    radius: 6
-    width: centerRow.implicitWidth + 24
-    height: 30
+    radius: 12
+    width: 280
+    height: 60
+    Layout.alignment: Qt.AlignTop
+    Layout.topMargin: 15
 
     property bool isDaytime: true
     function getWeatherIcon(condition, isDay) {
@@ -21,7 +22,7 @@ Rectangle {
         if (cond.includes("cloud") || cond.includes("overcast")) 
             return "󰖐";
         if (cond.includes("rain") || cond.includes("drizzle") || cond.includes("shower")) 
-            return "󰖎";
+            return "";
         if (cond.includes("thunder") || cond.includes("storm")) 
             return "󰖓";
         if (cond.includes("snow") || cond.includes("ice") || cond.includes("blizzard")) 
@@ -34,7 +35,7 @@ Rectangle {
     RowLayout {
         id: centerRow
         anchors.centerIn: parent
-        spacing: 13
+        spacing: 30
 
         ColumnLayout {
             spacing: -2
@@ -44,7 +45,7 @@ Rectangle {
                 id: timeText
                 color: '#578f59'
                 font.family: custom_font.name
-                font.pixelSize: 13
+                font.pixelSize: 27
                 font.bold: true
                 Layout.alignment: Qt.AlignLeft
             }
@@ -54,27 +55,27 @@ Rectangle {
                 id: dateText
                 color: "#bac2de"
                 font.family: custom_font.name
-                font.pixelSize: 8
+                font.pixelSize: 17
                 Layout.alignment: Qt.AlignLeft
             }
         }
 
         //weather
         RowLayout {
-            spacing: 6
+            spacing: 8
             Layout.alignment: Qt.AlignVCenter
 
             Text {
                 text: weatherTime.getWeatherIcon(weatherFetcher.condition, weatherTime.isDaytime)
                 color: "#cba6f7"
-                font.pixelSize: 14
+                font.pixelSize: 30
             }
 
             Text {
                 text: weatherFetcher.temp
                 color: "#578f59"
                 font.family: custom_font.name
-                font.pixelSize: 12
+                font.pixelSize: 25
                 font.bold: true
             }
         }
@@ -91,18 +92,22 @@ Rectangle {
             dateText.text = d.toLocaleDateString(Qt.locale(), "dddd, MMMM d");
 
             let currentHour = d.getHours();
-            weatherTime.isDaytime = (currentHour >= 6 && currentHour < 18);
+            weatherTime.isDaytime = (currentHour >= 6 && currentHour < 22);
         }
         Component.onCompleted: triggered()
     }
 
-    // Grabs the temperature from wttr.in without requiring an API key
     Process {
         id: weatherFetcher
         property string temp: "..."
-        property string condition: "Unknown"
+        property string condition: "unknown"
+        
+        running: true 
 
-        command: ["sh", "-c", "curl -s 'wttr.in/?format=%C|%t' | tr -d '+'"]
+        command: [
+            "sh", "-c", 
+            "while true; do curl -s 'wttr.in/?format=%C|%t' | tr -d '+'; echo; sleep 300; done"
+        ]
         
         stdout: SplitParser {
             onRead: (line) => {
@@ -116,14 +121,5 @@ Rectangle {
                 }
             }
         }
-    }
-
-    // Refresh weather every 30 minutes to avoid API rate limits
-    Timer {
-        interval: 1800000 
-        running: true
-        repeat: true
-        onTriggered: weatherFetcher.running = true
-        Component.onCompleted: weatherFetcher.running = true
     }
 }

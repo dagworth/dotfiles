@@ -7,33 +7,33 @@ import Quickshell.Services.Mpris
 
 Rectangle {
     color: backgroundColor
-    radius: 5
-    Layout.preferredHeight: 30
+    radius: 12
+    Layout.preferredHeight: 60
     Layout.alignment: Qt.AlignTop
-    Layout.topMargin: 6
-    width: 150
+    Layout.topMargin: 15
+    width: 285
 
     Row {
         id: wsLayout
         anchors.centerIn: parent
-        spacing: 7
+        spacing: 10
 
         Repeater {
             model: 5
 
             delegate: Rectangle {
                 property bool isActive: Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.name === (index + 1).toString()
-                height: 20
-                width: isActive ? 28 : 20
-                radius: 5
+                height: 40
+                width: isActive ? 60 : 40
+                radius: 12
                 color: isActive ? '#f5c2e7' : '#45475a'
 
                 Text {
                     anchors.centerIn: parent
-                    anchors.horizontalCenterOffset: -.5
+                    anchors.horizontalCenterOffset: .5
                     anchors.verticalCenterOffset: .5
                     text: [" ", "󰈹", " ", "󰓇", "󰙯"][index]
-                    font.pixelSize: 13
+                    font.pixelSize: 25
                     font.bold: true
                     color: isActive ? "#1e141e" : "#cdd6f4"
                 }
