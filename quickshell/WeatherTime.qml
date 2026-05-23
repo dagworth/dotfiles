@@ -7,7 +7,7 @@ Rectangle {
     id: weatherTime
     color: backgroundColor
     radius: 12
-    width: 280
+    width: 300
     height: 60
     Layout.alignment: Qt.AlignTop
     Layout.topMargin: 15
@@ -43,7 +43,7 @@ Rectangle {
             //time
             Text {
                 id: timeText
-                color: '#578f59'
+                color: mainColor
                 font.family: custom_font.name
                 font.pixelSize: 27
                 font.bold: true
@@ -53,7 +53,7 @@ Rectangle {
             //date
             Text {
                 id: dateText
-                color: "#bac2de"
+                color: fadedTextColor
                 font.family: custom_font.name
                 font.pixelSize: 17
                 Layout.alignment: Qt.AlignLeft
@@ -67,13 +67,13 @@ Rectangle {
 
             Text {
                 text: weatherTime.getWeatherIcon(weatherFetcher.condition, weatherTime.isDaytime)
-                color: "#cba6f7"
+                color: mainColor
                 font.pixelSize: 30
             }
 
             Text {
                 text: weatherFetcher.temp
-                color: "#578f59"
+                color: mainTextColor
                 font.family: custom_font.name
                 font.pixelSize: 25
                 font.bold: true
@@ -99,7 +99,7 @@ Rectangle {
 
     Process {
         id: weatherFetcher
-        property string temp: "..."
+        property string temp: "........."
         property string condition: "unknown"
         
         running: true 

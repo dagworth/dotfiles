@@ -17,7 +17,7 @@ Rectangle {
     property var spotifyPlayer: {
         if (!Mpris.players || !Mpris.players.values) return null;
         for (const player of Mpris.players.values) {
-            if (player && player.identity && player.identity.toLowerCase() === "spotify") {
+            if (player && player.identity && player.identity == "Spotify") {
                 return player;
             }
         }
@@ -32,6 +32,22 @@ Rectangle {
     }
 
     Layout.preferredWidth: 360
+    clip: true
+
+    Rectangle {
+        width: (spotifyPlayer.position/spotifyPlayer.length)*360
+        height: 60
+        radius: 12
+        color: secondaryColor
+        visible: spotifyPlayer
+
+        Behavior on width {
+            NumberAnimation {
+                duration: 2500
+                easing.type: Easing.OutCubic
+            }
+        }
+    }
 
     RowLayout {
         anchors.fill: parent
@@ -43,28 +59,28 @@ Rectangle {
             Layout.preferredWidth: 50
             Layout.preferredHeight: 50
             Layout.alignment: Qt.AlignVCenter
-
+            
             Image {
-                id: albumArt
+                id: album
                 anchors.fill: parent
                 source: spotifyPlayer ? spotifyPlayer.trackArtUrl : ""
-                fillMode: Image.PreserveAspectCrop
                 visible: false
-                onStatusChanged: if (status == Image.Error) source = "image://icon/media-playback-start"
             }
 
+            //shape
             Rectangle {
-                id: maskShape
+                id: shape
                 anchors.fill: parent
                 radius: 12
                 visible: false
                 layer.enabled: true
             }
 
+            //mask
             MultiEffect {
                 anchors.fill: parent
-                source: albumArt
-                maskSource: maskShape
+                source: album
+                maskSource: shape
                 maskEnabled: true
             }
         }
@@ -73,7 +89,7 @@ Rectangle {
             spacing: 2
             Text {
                 text: spotifyPlayer ? (spotifyPlayer.trackTitle + " - " + spotifyPlayer.trackArtist) : "spotify down :("
-                color: "#cdd6f4"
+                color: mainTextColor
                 font.family: custom_font.name
                 font.pixelSize: 17
                 font.bold: true
@@ -84,7 +100,7 @@ Rectangle {
             Text {
                 font.family: custom_font.name
                 text: spotifyPlayer ? (spotifyBubble.formatTime(spotifyPlayer.position) + " / " + spotifyBubble.formatTime(spotifyPlayer.length)) : "??:?? / ??:??"
-                color: '#9ca6adc8' 
+                color: fadedTextColor
                 font.pixelSize: 14
                 font.bold: true
             }
@@ -98,7 +114,7 @@ Rectangle {
             Text {
                 text: "󰒮"
                 font.pixelSize: 25
-                color: "#cdd6f4"
+                color: mainTextColor
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
@@ -111,7 +127,7 @@ Rectangle {
                 property bool isPlaying: spotifyPlayer && spotifyPlayer.playbackState === MprisPlaybackState.Playing
                 text: isPlaying ? "󰏤" : "󰐊"
                 font.pixelSize: 30
-                color: "#cdd6f4"
+                color: mainTextColor
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
@@ -132,7 +148,7 @@ Rectangle {
             Text {
                 text: "󰒭"
                 font.pixelSize: 25
-                color: "#cdd6f4"
+                color: mainTextColor
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor

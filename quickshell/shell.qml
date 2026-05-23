@@ -7,7 +7,14 @@ import Quickshell.Services.Notifications
 
 PanelWindow {
     id: root
-    property color backgroundColor: '#99343434' //99343434
+    property color backgroundColor: "#99343434" //99343434
+    property color mainTextColor: "#cdd6f4" //cdd6f4
+    property color fadedTextColor: "#9ca6adc8" //9ca6adc8
+
+    property color mainColor: "#5daca2" //5daca2
+    property color secondaryColor: "#2f5550" //45475a
+
+    property color darkColor: '#0c2930' //1e141e1
 
     anchors.top: true
     anchors.left: true
@@ -23,14 +30,9 @@ PanelWindow {
         }
     }
 
-    FileView {
-        id: batteryFile
-        path: "/sys/class/power_supply/BAT0/capacity"
-    }
-
     FontLoader {
         id: custom_font
-        source: "./iosevka-nerd-font.ttf"
+        source: "./Montserrat-Bold.ttf"
     }
 
     Item {
@@ -54,20 +56,34 @@ PanelWindow {
             anchors.topMargin: 15
         }
 
-        RowLayout {
+        // ActiveWindow {
+        //     anchors.horizontalCenter: parent.horizontalCenter
+        //     anchors.left: parent.left
+        //     anchors.leftMargin: 1500
+        // }
+
+        Rectangle {
             anchors.right: parent.right
-            anchors.top: parent.top 
-            anchors.topMargin: 15
+            anchors.top: parent.top
+            anchors.topMargin: 12
+            anchors.rightMargin: 10
+            color: backgroundColor
+            radius: 12
 
-            spacing: 12
+            height: 60
+            width: 300
 
-            Item { Layout.fillWidth: true }
-            ActiveWindow  {Layout.rightMargin: 5}
-            PowerProfile {Layout.rightMargin: 5}
-            CPUTemp {Layout.rightMargin: 5}
-            Battery {Layout.rightMargin: 5}
+            RowLayout {
+                anchors.fill: parent
+                spacing: 15
+                Item { Layout.fillWidth: true }
+                PowerProfile {}
+                BluetoothButton {}
+                SoundButton {}
+                Battery {}
+            }
         }
     }
 
-    NotificationWindow {}
+    //NotificationWindow {}
 }

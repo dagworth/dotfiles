@@ -5,34 +5,32 @@ import Quickshell.Io
 
 Rectangle {
     id: tempRoot
-    color: backgroundColor
-    radius: 12
+    color: "transparent"
     Layout.preferredHeight: 50
     Layout.alignment: Qt.AlignTop
     Layout.topMargin: 5
 
     width: 60
 
-    RowLayout {
+    ColumnLayout {
         anchors.centerIn: parent
-        anchors.verticalCenterOffset: 2
-        spacing: 5
+        anchors.verticalCenterOffset: -2
+        spacing: -32
 
         Text {
-            text: ""
-            color: "orange"
+            text: ""
+            color: mainColor
             font.family: custom_font.name
-            font.pixelSize: 25
+            font.pixelSize: 40
             font.bold: true
         }
 
         Text {
-            anchors.horizontalCenterOffset: 12
             Layout.alignment: Qt.AlignHCenter
             text: tempRoot.currentTemp
-            color: "orange"
+            color: darkColor
             font.family: custom_font.name
-            font.pixelSize: 20
+            font.pixelSize: 16
             font.bold: true
         }
     }

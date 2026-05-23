@@ -26,16 +26,15 @@ Rectangle {
                 height: 40
                 width: isActive ? 60 : 40
                 radius: 12
-                color: isActive ? '#f5c2e7' : '#45475a'
+                color: isActive ? mainColor : secondaryColor
 
                 Text {
                     anchors.centerIn: parent
-                    anchors.horizontalCenterOffset: .5
+                    anchors.horizontalCenterOffset: 0
                     anchors.verticalCenterOffset: .5
                     text: [" ", "󰈹", " ", "󰓇", "󰙯"][index]
                     font.pixelSize: 25
-                    font.bold: true
-                    color: isActive ? "#1e141e" : "#cdd6f4"
+                    color: isActive ? darkColor : mainTextColor
                 }
 
                 Behavior on width { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }

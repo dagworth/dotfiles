@@ -5,12 +5,10 @@ import Quickshell.Io
 
 Rectangle {
     id: powerRoot
-    color: backgroundColor
-    radius: 12
-    Layout.preferredHeight: 50
-    Layout.alignment: Qt.AlignTop
-    Layout.topMargin: 5
-    width: 50
+    color: secondaryColor
+    radius: 10
+    Layout.preferredHeight: 45
+    Layout.preferredWidth: 45
 
     property string currentProfile: "balanced"
 
@@ -31,7 +29,6 @@ Rectangle {
         text: powerRoot.getIcon()
         color: powerRoot.getColor()
         font.pixelSize: 30
-        font.bold: true
     }
 
     MouseArea {

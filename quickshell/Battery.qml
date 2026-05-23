@@ -3,40 +3,50 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 
-Rectangle {
+ColumnLayout {
     id: battery
-    color: backgroundColor
-    radius: 12
+
     Layout.preferredHeight: 50
+    Layout.preferredWidth: 40
+
     Layout.alignment: Qt.AlignTop
-    Layout.topMargin: 5
+    Layout.topMargin: -3
 
-    width: 60
+    spacing: -31
 
-    property string currentBat: ""
+    property string currentBat: "100"
 
-    RowLayout {
-        anchors.centerIn: parent
-        anchors.verticalCenterOffset: 2
-        spacing: 5
+    FileView {
+        id: batteryFile
+        path: "/sys/class/power_supply/BAT0/capacity"
+    }
 
-        Text {
-            text: "󰂀"
-            color: "lightgreen"
-            font.family: custom_font.name
-            font.pixelSize: 25
-            font.bold: true
+    Text {
+        text: "󰂀"
+        color: {
+            if(battery.currentBat >= 20) {
+                return mainColor
+            } else {
+                return "red"
+            }
         }
+        font.family: custom_font.name
+        font.pixelSize: 50
+    }
 
-        Text {
-            anchors.horizontalCenterOffset: 12
-            Layout.alignment: Qt.AlignHCenter
-            text: battery.currentBat
-            color: "lightgreen"
-            font.family: custom_font.name
-            font.pixelSize: 20
-            font.bold: true
+    Text {
+        Layout.leftMargin: 2.5
+        text: {
+            if(battery.currentBat == 100) {
+                return ":)"
+            } else {
+                return battery.currentBat
+            }
         }
+        color: darkColor
+        font.family: custom_font.name
+        font.pixelSize: 16
+        font.bold: true
     }
 
     Process {

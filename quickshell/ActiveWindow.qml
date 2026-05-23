@@ -26,11 +26,11 @@ Rectangle {
                 ? Hyprland.activeToplevel.title 
                 : "Desktop"
             
-            color: "#cdd6f4" 
+            color: mainColor
+            font.family: custom_font.name
             font.pixelSize: 20
             font.bold: true
             
-            // These now work perfectly because they are wrapped inside a RowLayout
             elide: Text.ElideRight
             Layout.fillWidth: true
             verticalAlignment: Text.AlignVCenter

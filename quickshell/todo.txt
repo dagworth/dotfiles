@@ -1,0 +1,5 @@
+dynamic workspace icons
+sound widget
+bluetooth widget
+activewindow fix
+notification window needs hitbox fixing
