@@ -13,6 +13,19 @@ Rectangle {
     Layout.topMargin: 15
     width: 285
 
+    function getIcon(className) {
+        console.log(className)
+        let cls = className.toLowerCase();
+        if (cls.includes("firefox")) return "󰈹";
+        if (cls.includes("spotify")) return "󰓇";
+        if (cls.includes("discord") || cls.includes("vesktop")) return "󰙯";
+        if (cls.includes("foot") || cls.includes("kitty") || cls.includes("alacritty")) return "󰞷";
+        if (cls.includes("thunar") || cls.includes("nautilus")) return "󰉋";
+        if (cls.includes("code")) return "󰨞";
+        
+        return "󰣇";
+    }
+
     Row {
         id: wsLayout
         anchors.centerIn: parent
@@ -32,7 +45,13 @@ Rectangle {
                     anchors.centerIn: parent
                     anchors.horizontalCenterOffset: 0
                     anchors.verticalCenterOffset: .5
-                    text: [" ", "󰈹", " ", "󰓇", "󰙯"][index]
+                    text: {
+                        // let current = Hyprland.toplevels
+                        // console.log(Hyprland.toplevels.values)
+
+                        //return getIcon(current);
+                        return ""
+                    }
                     font.pixelSize: 25
                     color: isActive ? darkColor : mainTextColor
                 }

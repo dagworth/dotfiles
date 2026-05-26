@@ -1,371 +1,248 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-import Quickshell.Widgets
 import Quickshell.Io
+import Quickshell.Hyprland
+import Quickshell.Bluetooth
 
 Rectangle {
-    id: bluetoothWindow
-    width: 320
-    height: 400
-    color: "transparent"
+    id: bluetoothButton
+    color: active ? mainColor : secondaryColor
+    height: 45
+    width: 45
+    radius: 10
 
-    property bool bluetoothOn: false
-    property string deviceListRaw: ""
-    property bool showDiscoveryView: false
+    property bool active: false
+    property bool discover_view: false
 
-    // Theme references 
-    property color accentColor: "#E2583E" 
-    property color surfaceColor: "#2a1e1b"
-    property color textMuted: "#888888"
-
-
-    // 1. Monitor Power State
-    Process {
-        id: checkPower
-        command: ["bluetoothctl", "show"]
-        running: true
-        stdout: SplitParser {
-            onRead: (data) => {
-                if (data.includes("Powered:")) {
-                    bluetoothOn = data.includes("yes");
-                }
+    Text {
+        anchors.centerIn: parent
+        text: {
+            if(Bluetooth.defaultAdapter) {
+                return Bluetooth.defaultAdapter.enabled ? "󰂯" : "󰂲"
+            } else {
+                return ":("
             }
         }
+        color: mainTextColor
+        font.family: custom_font.name
+        font.pixelSize: 32
     }
 
-    // 2. Fetch Paired Devices
-    Process {
-        id: fetchPairedDevices
-        command: ["bluetoothctl", "devices"]
-        running: bluetoothOn && !showDiscoveryView
-        stdout: SplitParser {
-            onRead: (data) => { deviceListRaw += data + "\n"; }
-        }
-        onExited: (code) => parseDevicesToModel(false)
-    }
-
-    // 3. Scan & Fetch Unpaired Devices
-    Process {
-        id: runScanner
-        command: ["bluetoothctl", "scan", "on"]
-        running: bluetoothOn && showDiscoveryView
-        stdout: SplitParser {
-            onRead: (data) => {
-                // Captures discovery lines like "[NEW] Device AA:BB:CC... Name"
-                if (data.includes("Device ")) {
-                    deviceListRaw += data + "\n";
-                    parseDevicesToModel(true);
-                }
-            }
-        }
-    }
-
-    // 4. Action Command: Toggle Power
-    Process {
-        id: togglePower
-        command: ["bluetoothctl", "power", bluetoothOn ? "off" : "on"]
-        onExited: (code) => refreshBackend()
-    }
-
-    // 5. Action Command: Connect / Disconnect Paired Device
-    Process {
-        id: toggleDeviceConnection
-        property string targetMac: ""
-        property bool currentlyConnected: false
-        command: ["bluetoothctl", currentlyConnected ? "disconnect" : "connect", targetMac]
-        onExited: (code) => refreshBackend()
-    }
-
-    // 6. Action Command: Pair Unpaired Device (Trust -> Pair -> Connect)
-    Process {
-        id: pairNewDevice
-        property string targetMac: ""
-        // Runs a multi-command chain natively via bash sequence to bind securely
-        command: ["bash", "-c", "bluetoothctl trust " + targetMac + " && bluetoothctl pair " + targetMac + " && bluetoothctl connect " + targetMac]
-        onExited: (code) => {
-            showDiscoveryView = false; // Flip back to paired view once done
-            refreshBackend();
-        }
-    }
-
-    // Polling Backend Sync
-    Timer {
-        interval: 3000
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: refreshBackend()
-    }
-
-    function refreshBackend() {
-        checkPower.start();
-        if (bluetoothOn) {
-            deviceListRaw = "";
-            // If viewing paired, clear and rebuild list. (Discovery accumulates live updates)
-            if (!showDiscoveryView) {
-                deviceModel.clear();
-                fetchPairedDevices.start();
-            }
-        } else {
-            deviceModel.clear();
-        }
-    }
-
-    function parseDevicesToModel(isDiscoveryStream) {
-        let lines = deviceListRaw.split("\n");
-        for (let i = 0; i < lines.length; i++) {
-            let line = lines[i].trim();
-            
-            // Clean up discovery prefixes if present
-            if (line.includes("Device ")) {
-                let cleanLine = line.substring(line.indexOf("Device "));
-                let parts = cleanLine.split(" ");
-                if (parts.length >= 3) {
-                    let mac = parts[1];
-                    let name = parts.slice(2).join(" ");
-                    
-                    // Prevent duplicate list additions
-                    let exists = false;
-                    for (let j = 0; j < deviceModel.count; j++) {
-                        if (deviceModel.get(j).mac === mac) {
-                            exists = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!exists) {
-                        deviceModel.append({
-                            "mac": mac,
-                            "name": name,
-                            "connected": false,
-                            "isUnpaired": isDiscoveryStream
-                        });
-                    }
-                }
-            }
-        }
-    }
-
-    ListModel {
-        id: deviceModel
-    }
-
-    // ─── VISUAL LAYOUT CONTAINER ─────────────────────────────────────
-    Rectangle {
+    MouseArea {
         anchors.fill: parent
-        color: "#1a1210" 
-        radius: 16
-        border.color: "#2a1e1b"
-        border.width: 1
+        cursorShape: Qt.PointingHandCursor
+        onClicked: {
+            active = !active
+        }
+    }
 
-        ColumnLayout {
+    PopupWindow {
+        id: popup
+        implicitHeight: 450
+        implicitWidth: 350
+        color: "transparent"
+        visible: active
+
+        anchor {
+            window: rootBar
+            item: bluetoothButton
+            rect.y: bluetoothButton.y + bluetoothButton.height + 5
+        }
+
+        Rectangle {
             anchors.fill: parent
-            anchors.margins: 16
-            spacing: 12
+            opacity: popup.visible ? 1 : 0
+            color: secondaryColor
+            radius: 10
 
-            // ─── HEADER ROW (TITLE + MASTER TOGGLE) ──────────────────
-            RowLayout {
-                Layout.fillWidth: true
-                
-                Text {
-                    text: "Bluetooth"
-                    color: "#ffffff"
-                    font.family: custom_font.name
-                    font.pixelSize: 16
-                    font.bold: true
-                    Layout.fillWidth: true
-                }
-
-                // Master Power Switch
-                Rectangle {
-                    id: masterToggle
-                    width: 44
-                    height: 24
-                    radius: 12
-                    color: bluetoothOn ? accentColor : surfaceColor
-                    border.color: bluetoothOn ? "transparent" : "#44322e"
-                    border.width: 1
-
-                    Rectangle {
-                        width: 16
-                        height: 16
-                        radius: 8
-                        color: "#ffffff"
-                        y: 4
-                        x: bluetoothOn ? parent.width - width - 4 : 4
-                        Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.OutQuad } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: togglePower.start()
-                    }
+            Behavior on opacity {
+                NumberAnimation {
+                    duration: 200
+                    easing.type: Easing.OutCubic
                 }
             }
 
-            // ─── VIEW SWITCH PILL (PAIRED VS DISCOVER) ─────────────────
-            Rectangle {
-                Layout.fillWidth: true
-                height: 32
-                color: surfaceColor
-                radius: 8
-                visible: bluetoothOn
+            ColumnLayout {
+                anchors.fill: parent
+                spacing: 15
 
+                //toggle on off
                 RowLayout {
-                    anchors.fill: parent
-                    spacing: 0
+                    Layout.fillWidth: true
+                    spacing: 10
 
-                    // Left Tab: Paired
-                    Rectangle {
-                        id: tabPaired
+                    Text {
+                        color: mainTextColor
+                        font.pixelSize: 16
+                        font.bold: true
+                        font.family: custom_font.name
+                        text: "bluetooth"
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: !showDiscoveryView ? "#3a2b27" : "transparent"
-                        radius: 6
-                        Layout.margins: 3
+                    }
 
+                    Rectangle {
+                        Layout.preferredWidth: 40
+                        Layout.preferredHeight: 24
+                        color: mainColor
+                        radius: 12
+                        
                         Text {
                             anchors.centerIn: parent
-                            text: "Paired"
-                            color: !showDiscoveryView ? "#ffffff" : textMuted
-                            font.family: custom_font.name
-                            font.pixelSize: 12
-                            font.bold: !showDiscoveryView
+                            text: Bluetooth.defaultAdapter.enabled ? "On" : "Off"
+                            color: mainTextColor
+                            font.pixelSize: 11
                         }
 
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                showDiscoveryView = false;
-                                refreshBackend();
+                                Bluetooth.defaultAdapter.enabled = !Bluetooth.defaultAdapter.enabled;
                             }
                         }
                     }
+                }
 
-                    // Right Tab: Discover
+                // tab buttons
+                RowLayout {
+                    Layout.fillWidth: true
+                    spacing: 10
+                    visible: Bluetooth.defaultAdapter.enabled
+
+                    //paired
                     Rectangle {
-                        id: tabDiscover
                         Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: showDiscoveryView ? accentColor : "transparent"
+                        Layout.preferredHeight: 30
                         radius: 6
-                        Layout.margins: 3
+                        color: !bluetoothButton.discover_view ? mainColor : backgroundColor
 
                         Text {
                             anchors.centerIn: parent
-                            text: "Discover"
-                            color: showDiscoveryView ? "#ffffff" : textMuted
-                            font.family: custom_font.name
-                            font.pixelSize: 12
-                            font.bold: showDiscoveryView
+                            text: "paired devices"
+                            color: mainTextColor
                         }
 
                         MouseArea {
                             anchors.fill: parent
                             cursorShape: Qt.PointingHandCursor
                             onClicked: {
-                                deviceModel.clear();
-                                deviceListRaw = "";
-                                showDiscoveryView = true;
-                                runScanner.start();
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Horizontal separator line
-            Rectangle {
-                Layout.fillWidth: true
-                height: 1
-                color: "#2d201c"
-            }
-
-            // ─── DEVICE SCROLL LIST ──────────────────────────────────
-            ListView {
-                id: deviceListView
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                clip: true
-                spacing: 6
-
-                model: deviceModel
-
-                Text {
-                    anchors.centerIn: parent
-                    text: !bluetoothOn ? "Bluetooth is turned off" : (showDiscoveryView ? "Scanning for devices..." : "No paired devices found")
-                    color: textMuted
-                    font.family: custom_font.name
-                    font.pixelSize: 13
-                    visible: deviceListView.count === 0
-                }
-
-                delegate: Rectangle {
-                    id: deviceRow
-                    width: deviceListView.width
-                    height: 50
-                    radius: 10
-                    color: model.connected ? "#251a17" : "transparent"
-
-                    MouseArea {
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        
-                        onEntered: if (!model.connected) deviceRow.color = "#201614"
-                        onExited: if (!model.connected) deviceRow.color = "transparent"
-                        
-                        onClicked: {
-                            if (model.isUnpaired) {
-                                pairNewDevice.targetMac = model.mac;
-                                pairNewDevice.start();
-                            } else {
-                                toggleDeviceConnection.targetMac = model.mac;
-                                toggleDeviceConnection.currentlyConnected = model.connected;
-                                toggleDeviceConnection.start();
+                                bluetoothButton.discover_view = false;
+                                Bluetooth.defaultAdapter.discovering = false;
                             }
                         }
                     }
 
-                    RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 12
-                        anchors.rightMargin: 12
-                        spacing: 12
+                    //pair new
+                    Rectangle {
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30
+                        radius: 6
+                        color: bluetoothButton.discover_view ? mainColor : backgroundColor
 
-                        // Icon handling (shows a radar scan icon for discovery items)
                         Text {
-                            text: model.isUnpaired ? "󰭔" : (model.connected ? "" : "")
-                            font.family: custom_font.name
-                            font.pixelSize: 18
-                            color: model.connected || model.isUnpaired ? accentColor : textMuted
+                            anchors.centerIn: parent
+                            text: "pair new device"
+                            color: mainTextColor
                         }
 
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 1
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                bluetoothButton.discover_view = true;
+                                Bluetooth.defaultAdapter.discovering = true;
+                            }
+                        }
+                    }
+                }
 
-                            Text {
-                                text: model.name !== "" ? model.name : model.mac
-                                color: "#ffffff"
-                                font.family: custom_font.name
-                                font.pixelSize: 13
-                                font.bold: model.connected
-                                elide: Text.ElideRight
+                // device list
+                ListView {
+                    id: deviceListView
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    clip: true
+                    spacing: 5
+
+                    visible: Bluetooth.defaultAdapter.enabled
+
+                    model: Bluetooth.defaultAdapter.devices
+
+                    delegate: Rectangle {
+                        width: deviceListView.width
+                        property bool show: bluetoothButton.discover_view ? !modelData.paired : modelData.paired
+                        
+                        height: show ? 45 : 0
+                        visible: show
+                        
+                        color: backgroundColor
+                        radius: 6
+
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: show ? 10 : 0
+                            visible: show
+
+                            ColumnLayout {
                                 Layout.fillWidth: true
+                                spacing: 2
+
+                                //name
+                                Text {
+                                    text: (modelData && modelData.name !== "") ? modelData.name : "unknown device"
+                                    color: mainTextColor
+                                    font.pixelSize: 14
+                                    Layout.fillWidth: true
+                                    elide: Text.ElideRight
+                                }
+
+                                //mac
+                                Text {
+                                    text: modelData ? modelData.address : ""
+                                    color: fadedTextColor
+                                    font.pixelSize: 11
+                                    Layout.fillWidth: true
+                                }
                             }
 
                             Text {
-                                text: model.isUnpaired ? "Click to Pair" : (model.connected ? "Connected" : "Paired")
-                                color: model.connected ? accentColor : textMuted
-                                font.family: custom_font.name
-                                font.pixelSize: 11
+                                text: (modelData && modelData.connected) ? "Connected" : ""
+                                color: mainColor
+                                font.pixelSize: 12
+                            }
+                        }
+
+                        MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                if (modelData) {
+                                    if (modelData.connected) {
+                                        modelData.disconnect();
+                                    } else {
+                                        modelData.connect();
+                                    }
+                                }
                             }
                         }
                     }
+                }
+                
+                //fallback if bluetooth is off
+                Text {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    
+                    visible: !Bluetooth.defaultAdapter || !Bluetooth.defaultAdapter.enabled
+                    
+                    text: "bluetooth is off"
+                    color: fadedTextColor 
+                    font.family: custom_font.name
+                    font.pixelSize: 30
+                    
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
                 }
             }
         }

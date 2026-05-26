@@ -35,7 +35,10 @@ Rectangle {
     clip: true
 
     Rectangle {
-        width: (spotifyPlayer.position/spotifyPlayer.length)*360
+        width: {
+            if(spotifyPlayer === null) { return 0 }
+            (spotifyPlayer.position/spotifyPlayer.length)*360
+        }
         height: 60
         radius: 12
         color: secondaryColor

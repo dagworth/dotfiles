@@ -6,7 +6,7 @@ import Quickshell.Services.Notifications
 
 
 PanelWindow {
-    id: root
+    id: rootBar
     property color backgroundColor: "#99343434" //99343434
     property color mainTextColor: "#cdd6f4" //cdd6f4
     property color fadedTextColor: "#9ca6adc8" //9ca6adc8
@@ -77,13 +77,14 @@ PanelWindow {
                 anchors.fill: parent
                 spacing: 15
                 Item { Layout.fillWidth: true }
+                //CPUTemp {}
+                Sound {}
                 PowerProfile {}
-                BluetoothButton {}
-                SoundButton {}
+                Bluetooth {}
                 Battery {}
             }
         }
     }
 
-    //NotificationWindow {}
+    // NotificationWindow {}
 }

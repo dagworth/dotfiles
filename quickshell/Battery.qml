@@ -35,10 +35,16 @@ ColumnLayout {
     }
 
     Text {
-        Layout.leftMargin: 2.5
+        Layout.leftMargin: {
+            if(battery.currentBat == 100){
+                return 5
+            } else {
+                return 2.5
+            }
+        }
         text: {
             if(battery.currentBat == 100) {
-                return ":)"
+                return "󰋑"
             } else {
                 return battery.currentBat
             }
@@ -50,7 +56,7 @@ ColumnLayout {
     }
 
     Process {
-        id: batFetcher
+        id: checker
         command: ["cat", "/sys/class/power_supply/BAT0/capacity"]
         stdout: SplitParser {
             onRead: (line) => {
@@ -65,7 +71,7 @@ ColumnLayout {
         interval: 15002
         running: true
         repeat: true
-        onTriggered: batFetcher.running = true
-        Component.onCompleted: batFetcher.running = true
+        onTriggered: checker.running = true
+        Component.onCompleted: checker.running = true
     }
 }

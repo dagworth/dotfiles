@@ -1,5 +1,14 @@
+todo:
 dynamic workspace icons
-sound widget
-bluetooth widget
-activewindow fix
+sound widget needs to look better and also show bar when volume change
+bluetooth redesign and close when click
+cputemp redesign
+activewindow redesign
 notification window needs hitbox fixing
+
+learn:
+command in weathertime and sound
+
+optional:
+untrust bluetooth
+try to rewrite bluetooth with ctl
