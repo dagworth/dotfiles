@@ -13,17 +13,31 @@ Rectangle {
     Layout.topMargin: 15
     width: 285
 
-    function getIcon(className) {
-        console.log(className)
-        let cls = className.toLowerCase();
-        if (cls.includes("firefox")) return "󰈹";
-        if (cls.includes("spotify")) return "󰓇";
-        if (cls.includes("discord") || cls.includes("vesktop")) return "󰙯";
-        if (cls.includes("foot") || cls.includes("kitty") || cls.includes("alacritty")) return "󰞷";
-        if (cls.includes("thunar") || cls.includes("nautilus")) return "󰉋";
-        if (cls.includes("code")) return "󰨞";
+    function getIcon(win) {
+        let name = win.wayland.appId
+        if (name) {
+            if (name.includes("firefox")) return "󰈹";
+            if (name.includes("Spotify")) return "󰓇";
+            if (name.includes("discord")) return "󰙯";
+            if (name.includes("kitty")) return "󰞷";
+            if (name.includes("code-oss")) return "󰨞";
+        }
+        //use win.title if not wayland
+        return "";
+    }
+
+    function getIconForWorkspace(index) {
+        let name = (index + 1).toString();
+        let windows = Hyprland.toplevels.values;
         
-        return "󰣇";
+        for (let i = 0; i < windows.length; i++) {
+            let win = windows[i];
+            if (win.workspace && win.workspace.name == name) {
+                return getIcon(win);
+            }
+        }
+
+        return "";
     }
 
     Row {
@@ -45,13 +59,7 @@ Rectangle {
                     anchors.centerIn: parent
                     anchors.horizontalCenterOffset: 0
                     anchors.verticalCenterOffset: .5
-                    text: {
-                        // let current = Hyprland.toplevels
-                        // console.log(Hyprland.toplevels.values)
-
-                        //return getIcon(current);
-                        return ""
-                    }
+                    text: getIconForWorkspace(index)
                     font.pixelSize: 25
                     color: isActive ? darkColor : mainTextColor
                 }
