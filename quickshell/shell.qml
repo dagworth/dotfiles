@@ -48,12 +48,7 @@ PanelWindow {
 
             Workspaces { Layout.leftMargin: 10 }
             SpotifyPlayer {}
-        }
-
-        WeatherTime {
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
-            anchors.topMargin: 15
+            WeatherTime { Layout.leftMargin: 450 }
         }
 
         // ActiveWindow {
@@ -71,13 +66,14 @@ PanelWindow {
             radius: 12
 
             height: 60
-            width: 300
-
+            width: row.implicitWidth
+            
             RowLayout {
+                id: row
                 anchors.fill: parent
                 spacing: 15
                 Item { Layout.fillWidth: true }
-                //CPUTemp {}
+                CPUTemp {}
                 Sound {}
                 PowerProfile {}
                 Bluetooth {}

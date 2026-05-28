@@ -7,10 +7,10 @@ Rectangle {
     id: weatherTime
     color: backgroundColor
     radius: 12
-    width: 300
-    height: 60
     Layout.alignment: Qt.AlignTop
     Layout.topMargin: 15
+    Layout.preferredHeight: 60
+    Layout.preferredWidth: centerRow.implicitWidth + 24
 
     property bool isDaytime: true
     function getWeatherIcon(condition, isDay) {

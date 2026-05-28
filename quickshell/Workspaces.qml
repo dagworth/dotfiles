@@ -11,16 +11,18 @@ Rectangle {
     Layout.preferredHeight: 60
     Layout.alignment: Qt.AlignTop
     Layout.topMargin: 15
-    width: 285
+    Layout.preferredWidth: workspaces.implicitWidth + 24
 
     function getIcon(win) {
         let name = win.wayland.appId
+        // console.log(name)
         if (name) {
             if (name.includes("firefox")) return "󰈹";
             if (name.includes("Spotify")) return "󰓇";
             if (name.includes("discord")) return "󰙯";
             if (name.includes("kitty")) return "󰞷";
             if (name.includes("code-oss")) return "󰨞";
+            if (name.includes("obsidian")) return "";
         }
         //use win.title if not wayland
         return "";
@@ -41,7 +43,7 @@ Rectangle {
     }
 
     Row {
-        id: wsLayout
+        id: workspaces
         anchors.centerIn: parent
         spacing: 10
 

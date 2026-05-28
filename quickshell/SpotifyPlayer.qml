@@ -7,12 +7,13 @@ import Quickshell.Services.Mpris
 import QtQuick.Effects
 
 Rectangle {
-    id: spotifyBubble
     color: backgroundColor
     radius: 12
     Layout.alignment: Qt.AlignTop
     Layout.preferredHeight: 60
     Layout.topMargin: 15
+    Layout.preferredWidth: 360
+    clip: true
 
     property var spotifyPlayer: {
         if (!Mpris.players || !Mpris.players.values) return null;
@@ -30,9 +31,6 @@ Rectangle {
         let secs = Math.floor(seconds % 60);
         return (mins < 10 ? "0" + mins : mins) + ":" + (secs < 10 ? "0" + secs : secs);
     }
-
-    Layout.preferredWidth: 360
-    clip: true
 
     Rectangle {
         width: {
@@ -102,7 +100,7 @@ Rectangle {
 
             Text {
                 font.family: custom_font.name
-                text: spotifyPlayer ? (spotifyBubble.formatTime(spotifyPlayer.position) + " / " + spotifyBubble.formatTime(spotifyPlayer.length)) : "??:?? / ??:??"
+                text: spotifyPlayer ? (formatTime(spotifyPlayer.position) + " / " + formatTime(spotifyPlayer.length)) : "??:?? / ??:??"
                 color: fadedTextColor
                 font.pixelSize: 14
                 font.bold: true

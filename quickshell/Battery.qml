@@ -38,6 +38,10 @@ ColumnLayout {
         Layout.leftMargin: {
             if(battery.currentBat == 100){
                 return 5
+            } else if(battery.currentBat < 10){
+                return 7.5
+            } else if(battery.currentBat < 20){
+                return 5
             } else {
                 return 2.5
             }
