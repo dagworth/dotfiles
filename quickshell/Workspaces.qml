@@ -62,7 +62,7 @@ Rectangle {
                 }
             }
         }
-        return baseWorkspaces.sort((a, b) => a - b);
+        return defaultws.sort((a, b) => a - b);
     }
 
     Row {
