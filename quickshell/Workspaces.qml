@@ -50,15 +50,15 @@ Rectangle {
     }
 
     function getWorkspacesModel() {
-        let default = [1, 2, 3, 4, 5];
+        let defaultws = [1, 2, 3, 4, 5];
         let windows = Hyprland.toplevels.values;
         
         for (let i = 0; i < windows.length; i++) {
             let win = windows[i];
             if (win.workspace) {
                 let a = parseInt(win.workspace.name);
-                if (a > 5 && !default.includes(a)) {
-                    default.push(a);
+                if (a > 5 && !defaultws.includes(a)) {
+                    defaultws.push(a);
                 }
             }
         }
