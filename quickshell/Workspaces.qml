@@ -37,18 +37,32 @@ Rectangle {
         return "";
     }
 
-    function getIconForWorkspace(index) {
-        let name = (index + 1).toString();
+    function getIconForWorkspace(workspaceName) {
         let windows = Hyprland.toplevels.values;
         
         for (let i = windows.length-1; i >= 0; i--) {
             let win = windows[i];
-            if (win.workspace && win.workspace.name == name) {
+            if (win.workspace && win.workspace.name === workspaceName) {
                 return getIcon(win);
             }
         }
-
         return "";
+    }
+
+    function getWorkspacesModel() {
+        let default = [1, 2, 3, 4, 5];
+        let windows = Hyprland.toplevels.values;
+        
+        for (let i = 0; i < windows.length; i++) {
+            let win = windows[i];
+            if (win.workspace) {
+                let a = parseInt(win.workspace.name);
+                if (a > 5 && !default.includes(a)) {
+                    default.push(a);
+                }
+            }
+        }
+        return baseWorkspaces.sort((a, b) => a - b);
     }
 
     Row {
@@ -57,10 +71,12 @@ Rectangle {
         spacing: 10
 
         Repeater {
-            model: 5
+            model: getWorkspacesModel(Hyprland.toplevels.values)
 
             delegate: Rectangle {
-                property bool isActive: Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.name === (index + 1).toString()
+                property string workspace: modelData.toString()
+                property bool isActive: Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.name === workspace
+                
                 height: closeHeight
                 width: isActive ? bubbleHeight : closeHeight
                 radius: bubbleRadius
@@ -70,7 +86,7 @@ Rectangle {
                     anchors.centerIn: parent
                     anchors.horizontalCenterOffset: 0
                     anchors.verticalCenterOffset: .5
-                    text: getIconForWorkspace(index)
+                    text: getIconForWorkspace(workspace)
                     font.pixelSize: bubbleHeight*.4
                     color: isActive ? darkColor : mainTextColor
                 }
@@ -81,7 +97,7 @@ Rectangle {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: Hyprland.dispatch('hl.dsp.focus({ workspace = "' + (index+1) + '" })')
+                    onClicked: Hyprland.dispatch('hl.dsp.focus({ workspace = "' + workspace + '" })')
                 }
             }
         }
