@@ -1,7 +1,8 @@
 /* layout */
 
 :root{
-    --tab-min-height: 60px !important
+    --tab-min-height: 50px !important;
+    --tabs-navbar-separator-color: transparent !important;
 }
 
 #urlbar-container {
@@ -9,9 +10,7 @@
 }
 
 #back-button, #forward-button, #PanelUI-menu-button, #new-tab-button {
-  transform: scale(1.5) !important;
-  margin-left: 7px !important;
-  margin-right: 7px !important;
+  transform: scale(1.25) !important;
 }
 
 #tabs-newtab-button, 
@@ -151,15 +150,19 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
     display: none !important;
 }
 
+#ipprotection-button {
+    display: none !important;
+}
+
 
 #urlbar-container, #urlbar, .tab-label {
-    font-size: 24px !important;
+    font-size: 18px !important;
 }
 
 .tab-icon-image {
     margin-left: 5px !important;
-    height: 24px !important;
-    width: 24px !important;
+    height: 20px !important;
+    width: 20px !important;
 }
 
 /* hover for new tab */
@@ -200,10 +203,20 @@ fill: currentColor !important; -moz-context-properties: fill !important; list-st
 
 /* Increase space between tab icon and text */
 .tab-icon-stack {
-  margin-inline-end: 8px !important;
+  margin-inline-end: 4px !important;
+}
+
+:root[privatebrowsingmode="temporary"] #ipprotection-button {
+    display: flex !important;
 }
 
 browser[type="content-primary"], 
 browser[type="content"] {
   background: #2B2A33 !important;
+}
+
+:root:not([privatebrowsingmode]) :is(toolbarbutton, toolbarpaletteitem), :root[privatebrowsingmode] :is(toolbarbutton:not(#firefox-view-button), toolbarpaletteitem:not(#wrapper-firefox-view-button)) {
+  & ~ #tabbrowser-tabs[orient="horizontal"]::before {
+    display: none !important;
+  }
 }
