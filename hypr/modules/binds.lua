@@ -1,5 +1,5 @@
 hl.bind("SUPER + Q", hl.dsp.exec_cmd("kitty"))
-hl.bind("SUPER + E", hl.dsp.exec_cmd("dolphin"))
+hl.bind("SUPER + E", hl.dsp.exec_cmd("kitty -e yazi"))
 hl.bind("SUPER + space", hl.dsp.exec_cmd("wofi --show drun"))
 hl.bind("SUPER + C", hl.dsp.window.close())
 
