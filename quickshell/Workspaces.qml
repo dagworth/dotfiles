@@ -18,7 +18,7 @@ Rectangle {
     function getIcon(win) {
         let name = win.wayland.appId
         let title = win.title
-        console.log(name)
+        //console.log(name)
         if (name) {
             if (name.includes("firefox")) return "󰈹";
             if (name.includes("Spotify")) return "󰓇";

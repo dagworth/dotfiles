@@ -35,7 +35,7 @@ Rectangle {
     Rectangle {
         width: {
             if(spotifyPlayer === null) { return 0 }
-            (spotifyPlayer.position/spotifyPlayer.length)*360
+            (spotifyPlayer.position/spotifyPlayer.length)*screen.width*.15
         }
 
         height: bubbleHeight

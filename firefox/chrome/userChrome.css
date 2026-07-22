@@ -9,7 +9,7 @@
     --urlbar-container-height: 60px !important;
 }
 
-#back-button, #forward-button, #PanelUI-menu-button, #new-tab-button {
+#PanelUI-menu-button, #new-tab-button {
   transform: scale(1.25) !important;
 }
 
@@ -120,12 +120,13 @@
 #appMenu-fxa-separator{border-image:none !important;}
 
 /*  Navbar buttons order  */
-#PanelUI-button, #wrapper-PanelUI-button{order: -2 !important}
-#nav-bar-overflow-button{order: -1 !important}
+#PanelUI-button, #wrapper-PanelUI-button{order: -4 !important}
+#nav-bar-overflow-button{order: -3 !important}
+#unified-extensions-button{order: -2 !important}
 #PanelUI-menu-button, #unified-extensions-button, #downloads-button{direction: rtl;}
 
-/*  Fix buttons padding  */
-#back-button{padding-right: 2px !important} #forward-button{padding-right: 8px !important}
+/*  Remove back/forward entirely so extensions has room  */
+#back-button, #forward-button{display: none !important}
 
 /*  Drop menus  */
 [position="bottomright topright"]{--panel-border-radius: 0 5px 5px 5px!important}

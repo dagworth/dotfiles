@@ -68,27 +68,36 @@ PanelWindow {
         //     anchors.leftMargin: 1500
         // }
 
-        Rectangle {
+        RowLayout {
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.topMargin: bubbleTopMargin
-            anchors.rightMargin: bubbleTopMargin
-            color: backgroundColor
-            radius: bubbleRadius
+            anchors.bottom: parent.bottom
+            spacing: bubbleHeight*.55
 
-            height: bubbleHeight
-            width: row.implicitWidth
-            
-            RowLayout {
-                id: row
-                anchors.fill: parent
-                spacing: bubbleHeight/4.5
-                //CPUTemp {}
-                Item { Layout.fillWidth: true }
-                Sound {}
-                PowerProfile {}
-                Bluetooth {}
-                Battery {}
+            DiscordNotif {}
+
+            Rectangle {
+                anchors.right: parent.right
+                anchors.top: parent.top
+                anchors.topMargin: bubbleTopMargin
+                anchors.rightMargin: bubbleTopMargin
+                color: backgroundColor
+                radius: bubbleRadius
+
+                height: bubbleHeight
+                width: row.implicitWidth
+                
+                RowLayout {
+                    id: row
+                    anchors.fill: parent
+                    spacing: bubbleHeight/4.5
+                    //CPUTemp {}
+                    Item { Layout.fillWidth: true }
+                    Sound {}
+                    PowerProfile {}
+                    Bluetooth {}
+                    Battery {}
+                }
             }
         }
     }
