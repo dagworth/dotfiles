@@ -19,15 +19,15 @@ Rectangle {
     // the icon of the highest-priority match wins (e.g. burpsuite over a browser).
     property var iconPriority: [
         { name: "burp-StartBurp", icon: "󰀂" },
-        { name: "code-oss", icon: "󰨞" },
-        { name: "godotengine", icon: "" },
-        { name: "steam", icon: "" },
-        { name: "vlc", icon: "" },
-        { name: "qbittorrent", icon: "󰨈" },
         { name: "discord", icon: "󰙯" },
         { name: "Spotify", icon: "󰓇" },
-        { name: "kitty", icon: "󰞷" },
+        { name: "godotengine", icon: "" },
+        { name: "steam", icon: "" },
+        { name: "qbittorrent", icon: "󰨈" },
+        { name: "code-oss", icon: "󰨞" },
         { name: "firefox", icon: "󰈹" },
+        { name: "vlc", icon: "" },
+        { name: "kitty", icon: "󰞷" },
     ]
 
     function getIcon(win) {
@@ -57,14 +57,14 @@ Rectangle {
     function getIconForWorkspace(workspaceName) {
         let windows = Hyprland.toplevels.values;
         let final = "";
-        let bestPriority = iconPriority.length + 1;
+        let highest = iconPriority.length + 1;
 
         for (let i = 0; i < windows.length; i++) {
             let win = windows[i];
             if (win.workspace && win.workspace.name === workspaceName) {
                 let p = getIconPriority(win);
-                if (p < bestPriority) {
-                    bestPriority = p;
+                if (p < highest) {
+                    highest = p;
                     final = getIcon(win);
                 }
             }
