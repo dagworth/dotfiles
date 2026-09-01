@@ -15,44 +15,67 @@ Rectangle {
 
     property int closeHeight: bubbleHeight*2/3
 
+    // Ordered highest priority first: when multiple windows share a workspace,
+    // the icon of the highest-priority match wins (e.g. burpsuite over a browser).
+    property var iconPriority: [
+        { name: "burp-StartBurp", icon: "󰀂" },
+        { name: "code-oss", icon: "󰨞" },
+        { name: "godotengine", icon: "" },
+        { name: "steam", icon: "" },
+        { name: "vlc", icon: "" },
+        { name: "qbittorrent", icon: "󰨈" },
+        { name: "discord", icon: "󰙯" },
+        { name: "Spotify", icon: "󰓇" },
+        { name: "kitty", icon: "󰞷" },
+        { name: "firefox", icon: "󰈹" },
+    ]
+
     function getIcon(win) {
         let name = win.wayland.appId
         let title = win.title
-        //console.log(name)
-        if (name) {
-            if (name.includes("firefox")) return "󰈹";
-            if (name.includes("Spotify")) return "󰓇";
-            if (name.includes("discord")) return "󰙯";
-            if (name.includes("kitty"))  {
-                if (title.includes("notes")) return "";
-                if (title.includes("Yazi")) return "";
-                return "󰞷";
-            }
-            if (name.includes("code-oss")) return "󰨞";
-            if (name.includes("burp-StartBurp")) return "󰀂";
-            if (name.includes("qbittorrent")) return "󰨈";
-            if (name.includes("vlc")) return "";
-            if (name.includes("steam")) return "";
+        if (!name) return "";
+        if (name.includes("kitty")) {
+            if (title.includes("notes")) return "󰠮";
+            if (title.includes("Yazi")) return "";
+            return "󰞷";
+        }
+        for (let i = 0; i < iconPriority.length; i++) {
+            if (name.includes(iconPriority[i].name)) return iconPriority[i].icon;
         }
         return "";
     }
 
+    function getIconPriority(win) {
+        let name = win.wayland.appId
+        if (!name) return iconPriority.length;
+        for (let i = 0; i < iconPriority.length; i++) {
+            if (name.includes(iconPriority[i].name)) return i;
+        }
+        return iconPriority.length;
+    }
+
     function getIconForWorkspace(workspaceName) {
         let windows = Hyprland.toplevels.values;
-        
-        for (let i = windows.length-1; i >= 0; i--) {
+        let final = "";
+        let bestPriority = iconPriority.length + 1;
+
+        for (let i = 0; i < windows.length; i++) {
             let win = windows[i];
             if (win.workspace && win.workspace.name === workspaceName) {
-                return getIcon(win);
+                let p = getIconPriority(win);
+                if (p < bestPriority) {
+                    bestPriority = p;
+                    final = getIcon(win);
+                }
             }
         }
-        return "";
+        return final;
     }
 
     function getWorkspacesModel() {
         let defaultws = [1, 2, 3, 4, 5];
         let windows = Hyprland.toplevels.values;
-        
+
         for (let i = 0; i < windows.length; i++) {
             let win = windows[i];
             if (win.workspace) {
@@ -76,7 +99,7 @@ Rectangle {
             delegate: Rectangle {
                 property string workspace: modelData.toString()
                 property bool isActive: Hyprland.focusedWorkspace && Hyprland.focusedWorkspace.name === workspace
-                
+
                 height: closeHeight
                 width: isActive ? bubbleHeight : closeHeight
                 radius: bubbleRadius

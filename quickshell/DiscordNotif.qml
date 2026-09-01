@@ -80,7 +80,7 @@ Rectangle {
 
             Text {
                 text: hasNotif
-                    ? (notifSender + (notifChannel !== "" ? " - " + notifChannel : ""))
+                    ? (notifSender + (notifChannel !== "" ? " — " + notifChannel : ""))
                     : "discord"
                 color: hasNotif ? mainTextColor : fadedTextColor
                 font.family: custom_font.name
