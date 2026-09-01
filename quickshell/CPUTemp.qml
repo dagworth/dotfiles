@@ -39,7 +39,7 @@ Rectangle {
 
     Process {
         id: cpuTempFetcher
-        command: ["sh", "-c", "cat /sys/class/thermal/thermal_zone0/temp | awk '{print int($1/1000)}'"]
+        command: [Quickshell.shellPath("scripts/cpu-temp.sh")]
         
         stdout: SplitParser {
             onRead: (line) => {

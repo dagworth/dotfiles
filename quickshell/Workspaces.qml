@@ -14,9 +14,6 @@ Rectangle {
     Layout.preferredWidth: workspaces.implicitWidth + 24
 
     property int closeHeight: bubbleHeight*2/3
-
-    // Ordered highest priority first: when multiple windows share a workspace,
-    // the icon of the highest-priority match wins (e.g. burpsuite over a browser).
     property var iconPriority: [
         { name: "burp-StartBurp", icon: "󰀂" },
         { name: "discord", icon: "󰙯" },

@@ -16,14 +16,17 @@ Rectangle {
     property int volume: 0
     property bool active: false
     property int startvolume: 0
+    property bool showVolumeNumber: false
 
     Text {
         anchors.centerIn: parent
         color: mainTextColor
-        font.pixelSize: buttonHeight*32/45
+        font.pixelSize: showVolumeNumber ? buttonHeight*22/45 : buttonHeight*32/45
+        font.bold: showVolumeNumber
         font.family: custom_font.name
 
         text: {
+            if (showVolumeNumber) return volume
             if (volume == 0)  return "󰕿"
             else if (volume < 35)  return "󰖀"
             return "󰕾"
@@ -64,7 +67,7 @@ Rectangle {
 
     Process {
         id: init
-        command: ["sh", "-c", "wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}'"]
+        command: [Quickshell.shellPath("scripts/sound-get-volume.sh")]
         running: false
         
         stdout: SplitParser {
@@ -77,19 +80,25 @@ Rectangle {
 
     Process {
         id: monitor
-        command: [
-            "bash", 
-            "-c", 
-            "pactl subscribe | grep --line-buffered 'sink' | while read -r _; do wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{print $2 * 100}'; done"
-        ]
+        command: [Quickshell.shellPath("scripts/sound-monitor.sh")]
         running: true
 
         stdout: SplitParser {
             onRead: (line) => {
                 let val = parseInt(line);
-                if (!isNaN(val)) volume = val;
+                if (!isNaN(val)) {
+                    volume = val;
+                    showVolumeNumber = true;
+                    volumeNumberTimer.restart();
+                }
             }
         }
+    }
+
+    Timer {
+        id: volumeNumberTimer
+        interval: 400
+        onTriggered: showVolumeNumber = false
     }
 
     PopupWindow {
@@ -148,7 +157,7 @@ Rectangle {
                     width: 3
                     color: mainTextColor
                     radius: 2
-                    
+
                     anchors.verticalCenter: parent.verticalCenter
                     x: 8.5 + ((startvolume / 100) * (parent.width - 20))
                 }

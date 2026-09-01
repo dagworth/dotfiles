@@ -1,7 +1,5 @@
 todo:
-sound widget needs to look better and also show bar when volume change
 bluetooth redesign and close when click
-cputemp redesign
 activewindow redesign
 notification window needs hitbox fixing
 bluetooth giving warnings
@@ -9,6 +7,8 @@ some
 
 learn:
 command in weathertime and sound1
+scripts
+discord
 
 optional:
 untrust bluetooth

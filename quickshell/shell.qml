@@ -94,6 +94,7 @@ PanelWindow {
                     //CPUTemp {}
                     Item { Layout.fillWidth: true }
                     Sound {}
+                    Brightness {}
                     PowerProfile {}
                     Bluetooth {}
                     Battery {}
