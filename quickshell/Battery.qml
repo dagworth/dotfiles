@@ -22,6 +22,7 @@ ColumnLayout {
     }
 
     Text {
+        id: batteryIcon
         text: "󰂀"
         color: {
             if(battery.currentBat >= 20) {
@@ -35,17 +36,8 @@ ColumnLayout {
     }
 
     Text {
-        Layout.leftMargin: {
-            if(battery.currentBat == 100){
-                return buttonHeight*5*1.5/45
-            } else if(battery.currentBat < 10){
-                return buttonHeight*7.5*1.5/45
-            } else if(battery.currentBat < 20){
-                return buttonHeight*5*1.5/45
-            } else {
-                return buttonHeight*2.5*1.5/45
-            }
-        }
+        id: batteryNumber
+        Layout.leftMargin: (batteryIcon.contentWidth - batteryNumber.contentWidth) / 2
         text: {
             if(battery.currentBat == 100) {
                 return "󰋑"
