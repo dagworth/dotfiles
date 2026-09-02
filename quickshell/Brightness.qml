@@ -13,17 +13,17 @@ Rectangle {
     Layout.alignment: Qt.AlignTop
     Layout.topMargin: buttonTopMargin
 
-    property int currentLevel: 100
+    property int brightness: 100
 
     function getIcon() {
-        if (currentLevel === 100) return "󰌵";
-        if (currentLevel === 50) return "󱠂";
+        if (brightness === 100) return "󰌵";
+        if (brightness === 50) return "󱠂";
         return "󱩌";
     }
 
     function getColor() {
-        if (currentLevel === 100) return "#f9e2af";
-        if (currentLevel === 50) return "#fab387";
+        if (brightness === 100) return "#f9e2af";
+        if (brightness === 50) return "#fab387";
         return '#5763be';
     }
 
@@ -39,14 +39,14 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
         onClicked: {
             let nextLevel = 100;
-            if (brightnessRoot.currentLevel === 100) nextLevel = 50;
-            else if (brightnessRoot.currentLevel === 50) nextLevel = 10;
-            else if (brightnessRoot.currentLevel === 10) nextLevel = 100;
+            if (brightnessRoot.brightness === 100) nextLevel = 50;
+            else if (brightnessRoot.brightness === 50) nextLevel = 10;
+            else if (brightnessRoot.brightness === 10) nextLevel = 100;
 
             setBrightnessCmd.command = ["brightnessctl", "set", nextLevel + "%"];
             setBrightnessCmd.running = true;
 
-            brightnessRoot.currentLevel = nextLevel;
+            brightnessRoot.brightness = nextLevel;
         }
     }
 
@@ -57,7 +57,7 @@ Rectangle {
             onRead: (line) => {
                 let level = parseInt(line.trim());
                 if (!isNaN(level)) {
-                    brightnessRoot.currentLevel = level;
+                    brightnessRoot.brightness = level;
                 }
             }
         }
